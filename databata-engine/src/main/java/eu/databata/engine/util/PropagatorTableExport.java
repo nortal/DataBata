@@ -89,7 +89,9 @@ public class PropagatorTableExport {
   private static String askTableName() {
     System.out.println("Insert table name:");
     Scanner input = new Scanner(System.in);
-    return input.nextLine();
+    String name = input.nextLine();
+    input.close();
+    return name;
   }
 
   private static String askDelimiter() {
@@ -99,7 +101,7 @@ public class PropagatorTableExport {
     if (StringUtils.isEmpty(delimiter)) {
       delimiter = "|";
     }
-
+    delimiterInput.close();
     return delimiter;
   }
 }

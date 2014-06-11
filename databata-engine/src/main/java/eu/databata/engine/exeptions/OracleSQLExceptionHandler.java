@@ -9,10 +9,18 @@ import org.apache.log4j.Logger;
  */
 public class OracleSQLExceptionHandler implements SQLExceptionHandler {
   private static final Logger LOG = Logger.getLogger(OracleSQLExceptionHandler.class);
-  
+
   public boolean isHandled(SQLException e, String sql) {
+    Scanner words = new Scanner(sql.toLowerCase());
+    try {
+      return isHandled(e, sql, words);
+    } finally {
+      words.close();
+    }
+  }
+
+  private boolean isHandled(SQLException e, String sql, Scanner words) {
     String lowerCaseSql = sql.toLowerCase();
-    Scanner words = new Scanner(lowerCaseSql);
     String word = null;
     switch (e.getErrorCode()) {
     case 955:
