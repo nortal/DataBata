@@ -20,3 +20,9 @@ databata-engine/build
 databata-engine/bin
 databata-console/build
 databata-console/bin
+
+databata-console-web/node_modules
+databata-console-web/vendor_lib
+databata-console-web/personal.config.js
+databata-console-web/build
+databata-console-web/.idea

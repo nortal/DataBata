@@ -1,0 +1,214 @@
+@import "../../vendor_lib/fontawesome/less/font-awesome.less";
+@fa-font-path: "/assets/fonts";
+
+@base-url: "../../vendor_lib/bootstrap/less/";
+@import "@{base-url}variables.less";
+@img-path: "/assets/img/";
+@import "variables.less";
+@icon-font-path: "/assets/fonts";
+
+@import "@{base-url}mixins.less";
+@import "@{base-url}normalize.less";
+@import "@{base-url}print.less";
+@import "@{base-url}scaffolding.less";
+@import "@{base-url}type.less";
+@import "@{base-url}code.less";
+@import "@{base-url}grid.less";
+@import "@{base-url}tables.less";
+@import "@{base-url}forms.less";
+@import "@{base-url}buttons.less";
+@import "@{base-url}component-animations.less";
+@import "@{base-url}glyphicons.less";
+@import "@{base-url}dropdowns.less";
+@import "@{base-url}button-groups.less";
+@import "@{base-url}input-groups.less";
+@import "@{base-url}navs.less";
+@import "@{base-url}navbar.less";
+@import "@{base-url}breadcrumbs.less";
+@import "@{base-url}pagination.less";
+@import "@{base-url}pager.less";
+@import "@{base-url}labels.less";
+@import "@{base-url}badges.less";
+@import "@{base-url}jumbotron.less";
+@import "@{base-url}thumbnails.less";
+@import "@{base-url}alerts.less";
+@import "@{base-url}progress-bars.less";
+@import "@{base-url}media.less";
+@import "@{base-url}list-group.less";
+@import "@{base-url}panels.less";
+@import "@{base-url}wells.less";
+@import "@{base-url}close.less";
+@import "@{base-url}modals.less";
+@import "@{base-url}tooltip.less";
+@import "@{base-url}popovers.less";
+@import "@{base-url}carousel.less";
+@import "@{base-url}utilities.less";
+@import "@{base-url}responsive-utilities.less";
+
+.modal-backdrop.am-fade {
+  opacity: .5;
+  transition: opacity .15s linear;
+  &.ng-enter {
+    opacity: 0;
+    &.ng-enter-active {
+      opacity: .5;
+    }
+  }
+  &.ng-leave {
+    opacity: .5;
+    &.ng-leave-active {
+      opacity: 0;
+    }
+  }
+}
+
+.nav-module {
+  position: relative;
+  left: -35px;
+}
+
+.sub {
+  vertical-align: sub;
+}
+
+.mt10 {
+  margin-top: 10px;
+}
+
+.mb10 {
+  margin-bottom: 10px;
+}
+
+.anchor {
+  display: block;
+  position: relative;
+  top: -80px;
+  visibility: hidden;
+}
+
+.click {
+  cursor:pointer;
+}
+
+body {
+  padding-top: 80px;
+}
+
+footer {
+  padding-top: 30px;
+  padding-bottom: 40px;
+}
+
+.title {
+  font-size: 42px;
+}
+
+.btn-module {
+  margin: 0 5px 10px;
+}
+
+.logs-search {
+  position: relative;
+  input {
+    padding-right: 30px;
+  }
+  i {
+    position: absolute;
+    right: 0px;
+    padding: 12px 12px;
+    color: @logs_color;
+  }
+}
+
+@logs_color: #007f5e;
+.section_logs_title {
+  color: @logs_color;
+}
+.section_logs {
+  background-color: @logs_color
+}
+.logs_table {
+  thead {
+    background-color: @body-bg;
+  }
+  background-color: darken(@logs_color, 10%);
+}
+
+@history_color: #be780a;
+.history_title {
+  color: @history_color;
+}
+/* collapsible tree: https://github.com/jhfrench/bootstrap-tree/blob/master/less/bootstrap-tree.less 3.0 - http://jsfiddle.net/jayhilwig/hv8vU/ */
+.tree {
+  min-height:20px;
+  -webkit-border-radius:4px;
+  -moz-border-radius:4px;
+  border-radius:4px;
+  -webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05)
+}
+.tree li {
+  list-style-type:none;
+  margin:0;
+  padding:10px 5px 0 5px;
+  position:relative
+}
+.tree li::before, .tree li::after {
+  content:'';
+  left:-20px;
+  position:absolute;
+  right:auto
+}
+.tree li::before {
+  border-left:1px solid #999;
+  bottom:50px;
+  height:100%;
+  top:0;
+  width:1px
+}
+.tree li::after {
+  border-top:1px solid #999;
+  height:20px;
+  top:25px;
+  width:25px
+}
+.tree li span {
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  border:1px solid #999;
+  border-radius:5px;
+  display:inline-block;
+  padding:3px 8px;
+  text-decoration:none
+}
+.tree li.parent_li>span {
+  cursor:pointer
+}
+.tree>ul>li::before, .tree>ul>li::after {
+  border:0
+}
+.tree li:last-child::before {
+  height:30px
+}
+.tree li.parent_li>span:hover, .tree li.parent_li>span:hover+ul li span {
+  background:#eee;
+  border:1px solid #94a0b4;
+  color:#000
+}
+
+@objects_color: #2077b2;
+.objects_title {
+  color: @objects_color;
+}
+.objects_table {
+  thead {
+    th a {
+      &:hover {
+        text-decoration: none;
+      }
+    }
+    background-color: @body-bg;
+  }
+  background-color: darken(@objects_color, 10%);
+}
