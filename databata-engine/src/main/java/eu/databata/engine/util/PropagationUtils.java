@@ -1,7 +1,6 @@
 package eu.databata.engine.util;
 
 import eu.databata.engine.exeptions.SQLExceptionHandler;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,13 +22,13 @@ import org.springframework.dao.DataAccessException;
 
 /**
  * Utilities for database propagator.
- *
+ * 
  * @author Aleksei Lissitsin <aleksei.lissitsin@webmedia.ee>
  */
 public final class PropagationUtils {
   private static final Logger LOG = Logger.getLogger(PropagationUtils.class);
   private static final String INPUTFILES_ENCODING = "UTF-8";
-  
+
   /**
    * This method is suitable for reading files not larger than 2 GB.
    */
@@ -57,7 +56,7 @@ public final class PropagationUtils {
   public static String readFile(File file) {
     return readFile(file, INPUTFILES_ENCODING);
   }
-  
+
   /**
    * This method is suitable for reading files not larger than 2 GB.
    */
@@ -65,24 +64,23 @@ public final class PropagationUtils {
     BufferedReader br = null;
     StringBuilder result = new StringBuilder();
 
-    try { 
+    try {
       br = new BufferedReader(new InputStreamReader(inputStream));
       String line = br.readLine();
       while (line != null) {
-         result.append(line);
-         line = br.readLine();
+        result.append(line);
+        line = br.readLine();
       }
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       LOG.error("Failed to read file.");
       throw new RuntimeException(e);
-    }
-    finally {
+    } finally {
       try {
-        if (br != null) br.close();
-        if (inputStream != null) inputStream.close();
-      }
-      catch (IOException e) {
+        if (br != null)
+          br.close();
+        if (inputStream != null)
+          inputStream.close();
+      } catch (IOException e) {
         LOG.error("Failed to read file.");
         throw new RuntimeException(e);
       }
@@ -93,13 +91,13 @@ public final class PropagationUtils {
   public static String removeExtension(String s) {
     return s.substring(0, s.lastIndexOf('.'));
   }
-  
+
   public static String removeExtension(File file) {
     String s = file.getName();
     return s.substring(0, s.lastIndexOf('.'));
   }
 
-  //TODO: to remove? Max
+  // TODO: to remove? Max
   protected static String removeEndingSemicolon(String contents) {
     String s = contents.trim();
     if (s.endsWith(";")) {
@@ -108,7 +106,7 @@ public final class PropagationUtils {
     return s;
   }
 
-//TODO: to remove? Max
+  // TODO: to remove? Max
   protected static String removeEndingBackwardSlash(String contents) {
     String s = contents.trim();
     if (s.endsWith("/")) {
@@ -117,7 +115,7 @@ public final class PropagationUtils {
     return s.trim();
   }
 
-//TODO: to remove? Max
+  // TODO: to remove? Max
   protected static List<String> scanFile(File file) throws FileNotFoundException {
     List<String> res = new ArrayList<String>();
     Scanner sc = new Scanner(new BufferedInputStream(new FileInputStream(file)), INPUTFILES_ENCODING);
@@ -141,6 +139,7 @@ public final class PropagationUtils {
         if (!StringUtils.isBlank(s)) {
           res.add(dos2Unix(s));
         }
+        strSc.close();
       }
     } finally {
       sc.close();
@@ -158,27 +157,30 @@ public final class PropagationUtils {
       throw e;
     }
   }
-  
-  //SQL exception handling
-  public static void handleDataAccessException(SQLException e, String sql, SQLExceptionHandler handler) throws SQLException {
+
+  // SQL exception handling
+  public static void handleDataAccessException(SQLException e, String sql, SQLExceptionHandler handler)
+      throws SQLException {
     if (!handler.isHandled(e, sql)) {
       throw e;
     }
   }
+
   /**
    * Needed to fix problems in OSGI findEntries method on Windows
+   * 
    * @return
    */
   public static String changePathSlashes(String path) {
     return path.replaceAll("\\\\", "/");
   }
-  
+
   public static String getPathLastFolder(String path) {
     String pathWithoutLastChar = path.substring(0, path.length());
-    pathWithoutLastChar = pathWithoutLastChar.substring(pathWithoutLastChar.lastIndexOf("/")+1);
+    pathWithoutLastChar = pathWithoutLastChar.substring(pathWithoutLastChar.lastIndexOf("/") + 1);
     return pathWithoutLastChar;
   }
-  
+
   public static String getDatabaseCode(String databaseName) {
     if (StringUtils.containsIgnoreCase(databaseName, "oracle")) {
       return "ORA";
@@ -187,7 +189,7 @@ public final class PropagationUtils {
     } else if (StringUtils.containsIgnoreCase(databaseName, "anywhere")) {
       return "SA";
     }
-    
+
     return null;
   }
 }
