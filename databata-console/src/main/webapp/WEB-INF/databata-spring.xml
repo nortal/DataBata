@@ -44,7 +44,7 @@
 	</beans:bean>
 
 	<beans:bean id="propagationDao"
-		class="eu.webmedia.dbpropagation.dao.PropagationDAO">
+		class="eu.databata.engine.dao.PropagationDAO">
 		<beans:property name="jdbcTemplate" ref="jdbcTemplate" />
 	</beans:bean>
 
