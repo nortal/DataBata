@@ -1,0 +1,197 @@
+doctype html
+html(lang="#{default_lang}",ng-app="#{ng_root_app}",ng-controller="#{ng_root_controller}")
+  head
+    title(ng-bind="data.title") DataBata
+    //DataBata - your database is dipped in data butter!
+    base(href)
+    meta(http-equiv="Cache-Control", content="no-cache")
+    meta(http-equiv="Content-Type", content="text/html; charset=UTF-8")
+    meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1")
+    meta(name="author", content="Nortal (Anton Stalnuhhin)")
+    meta(name="description", content="DataBata, database, migration, refactor, tool, open source, sql, propagation, propagator")
+    meta(name="viewport", content="width=device-width,user-scalable=1.0,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0")
+    meta(name="apple-mobile-web-app-capable",content="yes")
+    link(rel="stylesheet",type="text/css",href="/#{style_file}")
+  body
+
+  .navbar.navbar-default.navbar-fixed-top(bs-navbar="")
+    .container
+      .navbar-header
+        a.navbar-brand.title(href="/") DataBata
+        ul.nav.navbar-left.nav-module
+          li
+            span.label.label-danger(ng-if="data.module !== 'ALL'")
+              | {{data.module}} &nbsp;
+              i.fa.fa-times.click(ng-click="clickModule('ALL')")
+      .hidden-xs
+        ul.nav.navbar-nav.navbar-right
+          li: a(href="#info"): i.fa.fa-info-circle.fa-2x
+          li: a(href="#logs"): i.fa.fa-list-alt.fa-2x
+          li: a(href="#history"): i.fa.fa-history.fa-2x
+          li: a(href="#objects"): i.fa.fa-cubes.fa-2x
+
+  #info.anchor
+  .container
+    .row
+      .col-sm-5
+        .row(ng-show="data.info.user")
+          .col-xs-2.text-right.text-muted: b user
+          .col-xs-10(ng-bind="data.info.user")
+        .row(ng-show="data.info.host")
+          .col-xs-2.text-right.text-muted: b host
+          .col-xs-10(ng-bind="data.info.host")
+        .row(ng-show="data.info.port")
+          .col-xs-2.text-right.text-muted: b port
+          .col-xs-10(ng-bind="data.info.port")
+        .row(ng-show="data.info.sid")
+          .col-xs-2.text-right.text-muted: b SID
+          .col-xs-10(ng-bind="data.info.sid")
+        .row(ng-show="data.info.service")
+          .col-xs-2.text-right.text-muted: b service
+          .col-xs-10(ng-bind="data.info.service")
+        .row.mt10
+          .col-xs-12: button.btn.btn-default(type="button") Export
+      .col-sm-7.mt10
+        button.btn.btn-primary.btn-xs.btn-module(type="button",ng-click="clickModule(item)",ng-class="{'btn-info': item === data.module}",ng-repeat="item in data.modules") {{item}}
+
+
+  #logs.anchor
+  .section_logs_title(ng-show="data.logs.length > 0")
+    .container: .row: .col-sm-12
+      h3.pull-right: b LOGS<small class="sub">{{logs_filtered.length < data.logs.length ? logs_filtered.length + ' of ' : ''}}{{data.logs.length}}</small>
+
+  .section_logs(ng-show="data.logs.length > 0")
+    .container
+      .row.mt10.mb10
+        .col-xs-8
+          .btn-group
+            button.btn.btn-default(type="button",ng-click="data.logs_limit = item",ng-class="{'active': item === data.logs_limit}",ng-repeat="item in data.logs_limits") {{item}}
+        .col-xs-4
+          .logs-search
+            i.fa.fa-times.click(ng-click="data.logs_filter.$ = ''")
+            input.form-control(type="text",placeholder="search text",ng-model="data.logs_filter.$",ng-model-options="{ debounce: 1000 }")
+      .row: .col-lg-12
+        table.table.table-hover.logs_table
+          thead
+            tr
+              th(colspan=2) {{logs_filtered.length}} rows
+              th
+                a(href="",ng-click="data.logs_order='update_time'; data.logs_reverse = !data.logs_reverse")
+                  | WHEN &nbsp;
+                  i.fa.fa-sort-desc(ng-show="data.logs_order == 'update_time' && data.logs_reverse")
+                  i.fa.fa-sort-asc(ng-show="data.logs_order == 'update_time' && !data.logs_reverse")
+              th
+                a(href="",ng-click="data.logs_order='execution_time'; data.logs_reverse = !data.logs_reverse")
+                  | MS &nbsp;
+                  i.fa.fa-sort-desc(ng-show="data.logs_order == 'execution_time' && data.logs_reverse")
+                  i.fa.fa-sort-asc(ng-show="data.logs_order == 'execution_time' && !data.logs_reverse")
+              th
+                a(href="",ng-click="data.logs_order='rows_updated'; data.logs_reverse = !data.logs_reverse")
+                  | ROWS &nbsp;
+                  i.fa.fa-sort-desc(ng-show="data.logs_order == 'rows_updated' && data.logs_reverse")
+                  i.fa.fa-sort-asc(ng-show="data.logs_order == 'rows_updated' && !data.logs_reverse")
+              th change
+              th(ng-if="data.module === 'ALL'") module
+          tbody
+            tr(ng-repeat="item in logs_filtered = (data.logs | filter:data.logs_filter | orderBy:data.logs_order:data.logs_reverse) | limitTo:data.logs_limit")
+              td {{$index + 1}}
+              td
+                span.click(ng-if="item.sql_text",ng-click="modal('SQL', item.sql_text)")
+                  i.fa.fa-database
+                | &nbsp;&nbsp;&nbsp;
+                span.click.text-danger(ng-if="item.error_code",ng-click="modal('ERROR ' + item.error_code, item.error_text)")
+                  i.fa.fa-exclamation-circle.text-danger
+                  b &nbsp;{{item.error_code}}
+              td {{formatDate(item.update_time)}}
+              td {{item.execution_time > 0 ? item.execution_time : ''}}
+              td {{item.rows_updated > 0 ? item.rows_updated : ''}}
+              td {{item.db_change_code}}
+              td(ng-if="data.module === 'ALL'") {{item.module_name}}
+  .container
+    .row
+      .col-sm-6
+        #history.anchor
+        h3.history_title: b HISTORY<small class="sub">{{data.history_filtered_count < data.history.length ? data.history_filtered_count + ' of ' : ''}}{{data.history.length}}</small>
+
+        .tree
+          ul
+            li
+              span
+                i.fa.fa-calendar
+                | 2013, Week 2
+              ul
+                li
+                  span.badge.badge-success
+                    i.icon-minus-sign
+                    | Monday, January 14: 8.00 hours
+                  ul
+                    li
+                      span
+                        i.icon-time
+                        | 6.00
+                      | &ndash;
+                      a(href="") Altered code...
+                    li
+                      span
+                        i.icon-time
+                        | 6.00
+                      | &ndash;
+                      a(href="") Altered code...
+
+        //ul.list-unstyled
+          li(ng-repeat="(group, items) in data.history_filtered")
+            b {{group}}
+            ul.list-unstyled
+              li(ng-repeat="item in items")
+                | {{formatHistoryTime(item.change_time)}}
+                b &nbsp;{{item.code}}
+                span(ng-if="data.module === 'ALL'") &nbsp;({{item.module_name}})
+      .col-sm-6
+        #objects.anchor
+        h3.objects_title.text-right: b OBJECTS<small class="sub">{{objects_filtered.length < data.objects.length ? objects_filtered.length + ' of ' : ''}}{{data.objects.length}}</small>
+        table.table.table-hover.objects_table(ng-show="objects_filtered.length > 0")
+          thead
+            tr
+              th
+                a(href="",ng-click="data.objects_order='object_name'; data.objects_reverse = !data.objects_reverse")
+                  | OBJECT &nbsp;
+                  i.fa.fa-sort-desc(ng-show="data.objects_order == 'object_name' && data.objects_reverse")
+                  i.fa.fa-sort-asc(ng-show="data.objects_order == 'object_name' && !data.objects_reverse")
+              th
+                a(href="",ng-if="data.module === 'ALL'",ng-click="data.objects_order='module_name'; data.objects_reverse = !data.objects_reverse")
+                  | MODULE &nbsp;
+                  i.fa.fa-sort-desc(ng-show="data.objects_order == 'module_name' && data.objects_reverse")
+                  i.fa.fa-sort-asc(ng-show="data.objects_order == 'module_name' && !data.objects_reverse")
+              th
+                a(href="",ng-click="data.objects_order='version'; data.objects_reverse = !data.objects_reverse")
+                  | VERSION &nbsp;
+                  i.fa.fa-sort-desc(ng-show="data.objects_order == 'version' && data.objects_reverse")
+                  i.fa.fa-sort-asc(ng-show="data.objects_order == 'version' && !data.objects_reverse")
+              th
+                a(href="",ng-click="data.objects_order='object_type'; data.objects_reverse = !data.objects_reverse")
+                  | TYPE &nbsp;
+                  i.fa.fa-sort-desc(ng-show="data.objects_order == 'object_type' && data.objects_reverse")
+                  i.fa.fa-sort-asc(ng-show="data.objects_order == 'object_type' && !data.objects_reverse")
+          tbody
+            tr(ng-repeat="item in objects_filtered = (data.objects | filter:data.objects_filter | orderBy:data.objects_order:data.objects_reverse)")
+              td(colspan=4)
+                span.pull-left.click(ng-click="showLog(item.object_name)") {{item.object_name}}
+                span.pull-right {{item.object_type}}
+                br
+                span.pull-left: span.label.label-info {{item.version}}
+                span.pull-left(ng-if="data.module === 'ALL'"): span.label.label-primary {{item.module_name}}
+                span.pull-right.text-muted {{item.md5_hash}}
+
+  .container
+    footer: .row
+      .col-xs-2.pull-right.text-right: a(href="http://www.nortal.com/"): img(src="/assets/img/nortal_logo.png", width="50px")
+      .col-xs-10
+        ul.list-unstyled.list-inline
+          li: a(href="http://blog.nortal.com/") Blog
+          li: a(href="https://github.com/nortal/databata/") GitHub
+          li: a(href="#") Donate
+          li: a(href="https://github.com/nortal/databata/LICENSE") MIT License
+          li: a(href="mailto:maksim.boiko@nortal.com") Support
+
+  each js_file in js_files
+    script(type="text/javascript", src="/#{js_file}")

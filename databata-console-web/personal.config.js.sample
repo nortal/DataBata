@@ -1,0 +1,4 @@
+module.exports = {
+  default_lang: 'en',
+  node_port: 3000
+};

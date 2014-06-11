@@ -1,0 +1,39 @@
+{
+  "author": "NORTAL",
+  "name": "databata",
+  "version": "0.0.1",
+  "homepage": "https://github.com/nortal/databata",
+  "engines": {
+    "node": ">= 0.8.4"
+  },
+  "dependencies": {
+    "time-grunt": "~0.3.x",
+
+    "grunt": "~0.4.x",
+    "grunt-contrib-clean": "~0.5.x",
+    "grunt-contrib-copy": "~0.5.x",
+    "grunt-contrib-concat": "~0.3.x",
+
+    "grunt-contrib-less": "~0.9.x",
+    "grunt-contrib-cssmin": "~0.7.x",
+    "grunt-contrib-htmlmin": "~0.2.x",
+    "grunt-contrib-imagemin": "~0.6.x",
+    "grunt-contrib-jade": "~0.10.x",
+    "grunt-html2js": "~0.2.x",
+    "ngmin": "~0.4.x",
+    "grunt-contrib-uglify": "~0.3.x",
+    "grunt-hashres": "~0.4.x",
+
+    "grunt-contrib-watch": "~0.5.x",
+    "grunt-contrib-jshint": "~0.8.x",
+    "grunt-bump": "0.0.x",
+    "grunt-file-info": "~1.0.x",
+    "grunt-bg-shell": "~2.3.x",
+
+    "connect": "~2.11.x",
+    "express": "~3.4.x",
+    "express-namespace": "~0.1.x",
+    "request": "~2.27.x",
+    "http-proxy": "~0.10.x"
+  }
+}
