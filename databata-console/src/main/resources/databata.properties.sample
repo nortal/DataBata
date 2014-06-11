@@ -1,0 +1,4 @@
+databata.driver=oracle.jdbc.OracleDriver
+databata.connection-url=jdbc:oracle:thin:@xxx.webmedia.int:1521:xxx
+databata.user=bata_test
+databata.password=bata_test
