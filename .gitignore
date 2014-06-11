@@ -17,3 +17,5 @@ gradle.properties
 #build
 databata-engine/build
 databata-engine/bin
+databata-console/build
+databata-console/bin
