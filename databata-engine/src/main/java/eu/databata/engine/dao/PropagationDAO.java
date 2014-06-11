@@ -1,5 +1,12 @@
 package eu.databata.engine.dao;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.springframework.jdbc.core.RowMapper;
+
+import eu.databata.engine.model.PropagationLock;
+
 import eu.databata.engine.model.HistoryLogEntry;
 import eu.databata.engine.model.PropagationHistory;
 import eu.databata.engine.model.PropagationObject;
@@ -165,6 +172,20 @@ public class PropagationDAO extends JdbcDaoSupport {
 
   public void deleteLock() {
     getJdbcTemplate().update("UPDATE " + lockTable + " SET TOKEN = NULL");
+  }
+
+  public PropagationLock getLockInfo() {
+    return getJdbcTemplate().queryForObject("SELECT * FROM " + lockTable, new RowMapper<PropagationLock>() {
+
+      @Override
+      public PropagationLock mapRow(ResultSet rs, int rowNum) throws SQLException {
+        PropagationLock lock = new PropagationLock();
+        lock.setToken(rs.getString("token"));
+        lock.setLockTime(rs.getDate("lock_time"));
+        
+        return lock;
+      }
+    });
   }
 
   public String getLockToken() {
