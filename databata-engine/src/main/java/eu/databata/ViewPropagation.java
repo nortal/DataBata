@@ -1,15 +1,10 @@
 package eu.databata;
 
-import eu.databata.engine.util.PropagationUtils;
-
+import eu.databata.engine.dao.PropagationDAO;
 import eu.databata.engine.model.PropagationObject;
 import eu.databata.engine.model.PropagationObject.ObjectType;
-
-import eu.databata.engine.dao.PropagationDAO;
-
-
+import eu.databata.engine.util.PropagationUtils;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,12 +29,11 @@ public class ViewPropagation extends SupplementPropagation {
   private static final Logger LOG = Logger.getLogger(ViewPropagation.class);
   private final Pattern viewPattern = Pattern.compile("(vsq_\\w+|v_\\w+)(?: |;|,|$|\n|\r|\\))", Pattern.CASE_INSENSITIVE);
 
-  Set<String> propagatedViews;
-
   public ViewPropagation(File directory, String moduleName, SQLPropagationTool sqlExecutor, PropagationDAO propagationDAO, String fileSearchRegexp) {
     super(directory, ObjectType.VIEW, moduleName, sqlExecutor, propagationDAO, fileSearchRegexp);
   }
 
+  @Override
   protected void propagateObjects(List<PropagationObject> propagationObjects) {
     if (LOG.isDebugEnabled()) {
       LOG.debug("Sorting views according to dependencies");
@@ -66,11 +60,6 @@ public class ViewPropagation extends SupplementPropagation {
   /**
    * Divide and conquer style recursive function, which allows a view to be added only after all of it's dependencies
    * have been met.
-   * 
-   * @param viewFile
-   * @param allViews
-   * @param orderedViewList
-   * @throws IOException
    */
   private void recViewAppend(PropagationObject viewFile,
                                     Map<String, PropagationObject> allViews,

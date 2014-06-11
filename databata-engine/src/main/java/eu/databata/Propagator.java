@@ -1,20 +1,14 @@
 package eu.databata;
 
-import eu.databata.engine.version.VersionProvider;
-
+import eu.databata.engine.dao.PropagationDAO;
+import eu.databata.engine.exeptions.SQLExceptionFactory;
+import eu.databata.engine.exeptions.SQLExceptionHandler;
+import eu.databata.engine.model.PropagationObject;
+import eu.databata.engine.model.PropagationObject.ObjectType;
 import eu.databata.engine.util.DBHistoryLogger;
 import eu.databata.engine.util.PropagationUtils;
 import eu.databata.engine.util.PropagatorLock;
-
-import eu.databata.engine.model.PropagationObject;
-import eu.databata.engine.model.PropagationObject.ObjectType;
-
-import eu.databata.engine.exeptions.SQLExceptionFactory;
-import eu.databata.engine.exeptions.SQLExceptionHandler;
-
-import eu.databata.engine.dao.PropagationDAO;
-
-
+import eu.databata.engine.version.VersionProvider;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -182,7 +176,6 @@ public abstract class Propagator implements InitializingBean {
       LOG.info("Processing entry with id = " + id);
     }
     try {
-      // historyLogger.startCaching();
       historyLogger.setCurrentDbChange(id);
       if (!simulationMode) {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
@@ -200,7 +193,6 @@ public abstract class Propagator implements InitializingBean {
         reloadFired = sqlExecutor.executeFile(id, file);
       }
     } finally {
-      // historyLogger.logCached(moduleName);
       historyLogger.setCurrentDbChange(null);
     }
   }
@@ -459,7 +451,7 @@ public abstract class Propagator implements InitializingBean {
   private void initEnvironment() {
     if (StringUtils.isNotEmpty(environmentSql)) {
       try {
-        environmentCode = (String) jdbcTemplate.queryForObject(environmentSql, null, String.class);
+        environmentCode = jdbcTemplate.queryForObject(environmentSql, null, String.class);
       } catch (Exception e) {
         environmentCode = "UNKNOWN";
       }
