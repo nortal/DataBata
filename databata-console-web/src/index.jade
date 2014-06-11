@@ -76,37 +76,37 @@ html(lang="#{default_lang}",ng-app="#{ng_root_app}",ng-controller="#{ng_root_con
             tr
               th(colspan=2) {{logs_filtered.length}} rows
               th
-                a(href="",ng-click="data.logs_order='update_time'; data.logs_reverse = !data.logs_reverse")
+                a(href="",ng-click="data.logs_order='updateTime'; data.logs_reverse = !data.logs_reverse")
                   | WHEN &nbsp;
-                  i.fa.fa-sort-desc(ng-show="data.logs_order == 'update_time' && data.logs_reverse")
-                  i.fa.fa-sort-asc(ng-show="data.logs_order == 'update_time' && !data.logs_reverse")
+                  i.fa.fa-sort-desc(ng-show="data.logs_order == 'updateTime' && data.logs_reverse")
+                  i.fa.fa-sort-asc(ng-show="data.logs_order == 'updateTime' && !data.logs_reverse")
               th
-                a(href="",ng-click="data.logs_order='execution_time'; data.logs_reverse = !data.logs_reverse")
+                a(href="",ng-click="data.logs_order='executionTime'; data.logs_reverse = !data.logs_reverse")
                   | MS &nbsp;
-                  i.fa.fa-sort-desc(ng-show="data.logs_order == 'execution_time' && data.logs_reverse")
-                  i.fa.fa-sort-asc(ng-show="data.logs_order == 'execution_time' && !data.logs_reverse")
+                  i.fa.fa-sort-desc(ng-show="data.logs_order == 'executionTime' && data.logs_reverse")
+                  i.fa.fa-sort-asc(ng-show="data.logs_order == 'executionTime' && !data.logs_reverse")
               th
-                a(href="",ng-click="data.logs_order='rows_updated'; data.logs_reverse = !data.logs_reverse")
+                a(href="",ng-click="data.logs_order='rowsUpdated'; data.logs_reverse = !data.logs_reverse")
                   | ROWS &nbsp;
-                  i.fa.fa-sort-desc(ng-show="data.logs_order == 'rows_updated' && data.logs_reverse")
-                  i.fa.fa-sort-asc(ng-show="data.logs_order == 'rows_updated' && !data.logs_reverse")
+                  i.fa.fa-sort-desc(ng-show="data.logs_order == 'rowsUpdated' && data.logs_reverse")
+                  i.fa.fa-sort-asc(ng-show="data.logs_order == 'rowsUpdated' && !data.logs_reverse")
               th change
               th(ng-if="data.module === 'ALL'") module
           tbody
             tr(ng-repeat="item in logs_filtered = (data.logs | filter:data.logs_filter | orderBy:data.logs_order:data.logs_reverse) | limitTo:data.logs_limit")
               td {{$index + 1}}
               td
-                span.click(ng-if="item.sql_text",ng-click="modal('SQL', item.sql_text)")
+                span.click(ng-if="item.sqlText",ng-click="modal('SQL', item.sqlText)")
                   i.fa.fa-database
                 | &nbsp;&nbsp;&nbsp;
-                span.click.text-danger(ng-if="item.error_code",ng-click="modal('ERROR ' + item.error_code, item.error_text)")
+                span.click.text-danger(ng-if="item.error_code",ng-click="modal('ERROR ' + item.errorCode, item.errorText)")
                   i.fa.fa-exclamation-circle.text-danger
-                  b &nbsp;{{item.error_code}}
-              td {{formatDate(item.update_time)}}
-              td {{item.execution_time > 0 ? item.execution_time : ''}}
-              td {{item.rows_updated > 0 ? item.rows_updated : ''}}
-              td {{item.db_change_code}}
-              td(ng-if="data.module === 'ALL'") {{item.module_name}}
+                  b &nbsp;{{item.errorCode}}
+              td {{formatDate(item.updateTime)}}
+              td {{item.executionTime > 0 ? item.executionTime : ''}}
+              td {{item.rowsUpdated > 0 ? item.rowsUpdated : ''}}
+              td {{item.dbChangeCode}}
+              td(ng-if="data.module === 'ALL'") {{item.moduleName}}
   .container
     .row
       .col-sm-6
@@ -153,34 +153,34 @@ html(lang="#{default_lang}",ng-app="#{ng_root_app}",ng-controller="#{ng_root_con
           thead
             tr
               th
-                a(href="",ng-click="data.objects_order='object_name'; data.objects_reverse = !data.objects_reverse")
+                a(href="",ng-click="data.objects_order='objectName'; data.objects_reverse = !data.objects_reverse")
                   | OBJECT &nbsp;
-                  i.fa.fa-sort-desc(ng-show="data.objects_order == 'object_name' && data.objects_reverse")
-                  i.fa.fa-sort-asc(ng-show="data.objects_order == 'object_name' && !data.objects_reverse")
+                  i.fa.fa-sort-desc(ng-show="data.objects_order == 'objectName' && data.objects_reverse")
+                  i.fa.fa-sort-asc(ng-show="data.objects_order == 'objectName' && !data.objects_reverse")
               th
-                a(href="",ng-if="data.module === 'ALL'",ng-click="data.objects_order='module_name'; data.objects_reverse = !data.objects_reverse")
+                a(href="",ng-if="data.module === 'ALL'",ng-click="data.objects_order='moduleName'; data.objects_reverse = !data.objects_reverse")
                   | MODULE &nbsp;
-                  i.fa.fa-sort-desc(ng-show="data.objects_order == 'module_name' && data.objects_reverse")
-                  i.fa.fa-sort-asc(ng-show="data.objects_order == 'module_name' && !data.objects_reverse")
+                  i.fa.fa-sort-desc(ng-show="data.objects_order == 'moduleName' && data.objects_reverse")
+                  i.fa.fa-sort-asc(ng-show="data.objects_order == 'moduleName' && !data.objects_reverse")
               th
                 a(href="",ng-click="data.objects_order='version'; data.objects_reverse = !data.objects_reverse")
                   | VERSION &nbsp;
                   i.fa.fa-sort-desc(ng-show="data.objects_order == 'version' && data.objects_reverse")
                   i.fa.fa-sort-asc(ng-show="data.objects_order == 'version' && !data.objects_reverse")
               th
-                a(href="",ng-click="data.objects_order='object_type'; data.objects_reverse = !data.objects_reverse")
+                a(href="",ng-click="data.objects_order='objectType'; data.objects_reverse = !data.objects_reverse")
                   | TYPE &nbsp;
-                  i.fa.fa-sort-desc(ng-show="data.objects_order == 'object_type' && data.objects_reverse")
-                  i.fa.fa-sort-asc(ng-show="data.objects_order == 'object_type' && !data.objects_reverse")
+                  i.fa.fa-sort-desc(ng-show="data.objects_order == 'objectType' && data.objects_reverse")
+                  i.fa.fa-sort-asc(ng-show="data.objects_order == 'objectType' && !data.objects_reverse")
           tbody
             tr(ng-repeat="item in objects_filtered = (data.objects | filter:data.objects_filter | orderBy:data.objects_order:data.objects_reverse)")
               td(colspan=4)
-                span.pull-left.click(ng-click="showLog(item.object_name)") {{item.object_name}}
-                span.pull-right {{item.object_type}}
+                span.pull-left.click(ng-click="showLog(item.objectName)") {{item.objectName}}
+                span.pull-right {{item.objectType}}
                 br
                 span.pull-left: span.label.label-info {{item.version}}
-                span.pull-left(ng-if="data.module === 'ALL'"): span.label.label-primary {{item.module_name}}
-                span.pull-right.text-muted {{item.md5_hash}}
+                span.pull-left(ng-if="data.module === 'ALL'"): span.label.label-primary {{item.moduleName}}
+                span.pull-right.text-muted {{item.md5Hash}}
 
   .container
     footer: .row

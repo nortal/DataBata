@@ -9,7 +9,7 @@ app.controller('RootCtrl', function ($scope, $resource, $modal, $location, $anch
       data.title = 'DataBata: ' + data.info.user + '@' + data.info.host;
     });
     var db_history = api.history(function() {
-      db_history = _.sortBy(db_history, function(item) { return item.change_time; });
+      db_history = _.sortBy(db_history, function(item) { return item.changeTime; });
       db_history.reverse();
       data.history.push.apply(data.history, db_history);
       groupHistory();
@@ -19,7 +19,7 @@ app.controller('RootCtrl', function ($scope, $resource, $modal, $location, $anch
     });
     var db_logs = api.logs(function() {
       data.logs.push.apply(data.logs, db_logs);
-      var modules = _.pluck(data.logs, 'module_name');
+      var modules = _.pluck(data.logs, 'moduleName');
       data.modules.push.apply(data.modules, _.uniq(modules));
     });
   }
@@ -31,7 +31,7 @@ app.controller('RootCtrl', function ($scope, $resource, $modal, $location, $anch
     }
     data.history_filtered_count = filtered.length;
     data.history_filtered = _.groupBy(filtered, function(item) {
-      return moment(item.change_time).format("YYYY.MM");
+      return moment(item.changeTime).format("YYYY.MM");
     });
   }
 
@@ -63,13 +63,13 @@ app.controller('RootCtrl', function ($scope, $resource, $modal, $location, $anch
     history_filtered: [],
     history_filtered_count: 0,
     objects: [],
-    objects_order: 'object_name',
+    objects_order: 'objectName',
     objects_reverse: false,
     objects_filter: {},
     logs: [],
     logs_limits: [15,50,150,500],
     logs_limit: 15,
-    logs_order: 'update_time',
+    logs_order: 'updateTime',
     logs_reverse: true,
     logs_filter: {},
     modules: ['ALL'],
@@ -94,12 +94,12 @@ app.controller('RootCtrl', function ($scope, $resource, $modal, $location, $anch
   $scope.clickModule = function(module) {
     data.module = module;
     if (module === 'ALL') {
-      data.logs_filter.module_name = '';
-      data.objects_filter.module_name = '';
+      data.logs_filter.moduleName = '';
+      data.objects_filter.moduleName = '';
       groupHistory();
     } else {
-      data.logs_filter.module_name = module;
-      data.objects_filter.module_name = module;
+      data.logs_filter.moduleName = module;
+      data.objects_filter.moduleName = module;
       groupHistory(module);
     }
   }
