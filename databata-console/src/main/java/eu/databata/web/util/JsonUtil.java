@@ -13,12 +13,11 @@ public class JsonUtil {
   
   static {
     GsonBuilder builder = new GsonBuilder();
-    builder.setDateFormat("dd.MM.yyyy");
+    builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     GSON = builder.create();
   }
 
   public static String toJson(Object toSerialize) {
-
     return GSON.toJson(toSerialize);
   }
 

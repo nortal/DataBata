@@ -1,17 +1,13 @@
 package eu.databata.web.rest;
 
-import java.util.regex.Matcher;
-
-import java.util.regex.Pattern;
-
 import eu.databata.engine.dao.PropagationDAO;
-import eu.databata.engine.model.PropagationObject;
 import eu.databata.web.model.DatabataPropsInfo;
 import eu.databata.web.util.JsonUtil;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.Resource;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -32,8 +28,21 @@ public class BataConsoleResource {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public String getObjects() {
-    List<PropagationObject> propagationObjects = propagationDAO.getPropagationObjects();
-    return JsonUtil.toJson(propagationObjects);
+    return JsonUtil.toJson(propagationDAO.getPropagationObjects());
+  }
+
+  @Path("history")
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  public String getHistory() {
+    return JsonUtil.toJson(propagationDAO.getHistory());
+  }
+  
+  @Path("logs")
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  public String getLogs() {
+    return JsonUtil.toJson(propagationDAO.getHistoryLog());
   }
 
   @Path("info")
