@@ -1,0 +1,17 @@
+db.propagation.driver=oracle.jdbc.OracleDriver
+#db.propagation.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+db.propagation.connection-url=jdbc:oracle:thin:@spitfhir.webmedia.int:1521:SPITFHIR
+db.propagation.user=bata_test
+db.propagation.password=bata_test
+
+db.location=file:///Users/max/prj/dbpropagation/test
+db.propagation.test.data.used=false
+db.propagation.disable=false
+db.propagation.module.name=DATABATA_TEST
+db.propagation.revalidation={call pkg_sys_meta.recompile_invalid_objects(1)}
+db.propagation.environment=SELECT code FROM env
+
+db.propagation.dba.connection-url=jdbc:oracle:thin:@xxx.webmedia.int:1521:xxx
+db.propagation.dba.user=system
+db.propagation.dba.password=xxx

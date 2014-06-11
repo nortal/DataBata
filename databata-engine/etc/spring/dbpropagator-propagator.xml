@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+  <bean id="propagator" class="eu.webmedia.dbpropagation.Propagator" init-method="init" >
+	<property name="jdbcTemplate" ref="jdbcTemplate" />	
+    <property name="transactionManager" ref="transactionManager" />
+    <property name="changes"  value="/WEB-INF/db/changes" />
+    <property name="packageDir" value="/WEB-INF/db/packages/"/> 
+    <property name="headersDir" value="/WEB-INF/db/headers/"/> 
+	<property name="viewDir" value="/WEB-INF/db/views"/>
+    <property name="triggerDir" value="/WEB-INF/db/triggers"/>
+    <property name="useTestData" value="false"/>
+    <property name="disableDbPropagation" value="false"/>
+    <property name="simulationMode" value="false" />
+    <property name="revalidationStatement" value="{call pkg_sys_meta.recompile_invalid_objects(1)}"/>
+    <property name="moduleName" value="SYSTEM_CORE" />
+  </bean>
+  
+   <bean id="dataSource"
+    class="org.springframework.jdbc.datasource.SingleConnectionDataSource">
+    <property name="driverClassName" value="oracle.jdbc.OracleDriver" />
+    <property name="url" value="jdbc:oracle:thin:@SOME_URL:1521:SOME_SID" />
+    <property name="username" value="databata_test" />
+    <property name="password" value="databata_test" />
+    <property name="suppressClose" value="true" />
+  </bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
+		<property name="ignoreWarnings" value="false" />
+	</bean>
+</beans>

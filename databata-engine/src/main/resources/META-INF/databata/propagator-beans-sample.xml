@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+  <import resource="propagator-db-beans-sample.xml"/>
+
+  <bean id="propagator" class="eu.databata.engine.spring.PropagatorSpringInstance" init-method="init" >
+    <property name="jdbcTemplate" ref="jdbcTemplate" />
+    <property name="transactionManager" ref="transactionManager" />
+       
+    <property name="changes"  value="/WEB-INF/db/changes/**" />
+    <property name="packageDir" value="/WEB-INF/db/packages"/>
+    <property name="viewDir" value="/WEB-INF/db/views"/>
+    <property name="triggerDir" value="/WEB-INF/db/triggers"/>
+    <property name="useTestData" value="${empis.db.propagation.test.data.used}"/>
+    <property name="disableDbPropagation" value="${empis.db.propagation.disable}"/>
+    <property name="revalidationStatement" value="{call pkg_sys_meta.recompile_invalid_objects(1)}"/>
+    <property name="moduleName" value="PROPAGATION_TEST" />
+  </bean>
+</beans>

@@ -1,0 +1,82 @@
+defaultTasks 'jar'
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'osgi'
+
+group = 'com.nortal'
+version = 'osgi'
+
+repositories {
+  mavenCentral()
+  maven { url "https://code.lds.org/nexus/content/groups/main-repo" }
+  maven {url "http://repository.springsource.com/maven/bundles/release"}
+  maven {url "http://repository.springsource.com/maven/bundles/external"}
+}
+
+configurations { deployerJars }
+    
+dependencies {
+  deployerJars 'org.apache.maven.wagon:wagon-ssh:2.2'
+}
+
+uploadArchives {
+    repositories {
+      mavenDeployer {
+        configuration = configurations.deployerJars
+        repository(url: "scp://maven2.webmedia.int/var/www/html/") {
+          authentication(userName: repoUser, password: repoPass)
+        }
+      }
+    }
+  }
+
+dependencies {
+  compile files("lib/sqltool.jar")
+  compile 'commons-lang:commons-lang:2.4'
+  compile 'log4j:log4j:1.2.+'
+  compile 'org.springframework:org.springframework.jdbc:3.1.3.RELEASE'
+  compile 'org.springframework.osgi:spring-osgi-core:1.2.1'
+  compile 'org.osgi:org.osgi.core:4.3.1'
+
+  runtime 'com.oracle:ojdbc6:11.2.0.3'
+  runtime 'org.hsqldb:hsqldb:2.2.9'
+  runtime 'commons-logging:commons-logging:1.1.3'
+}
+
+jar.doFirst {
+  sourceSets.main.java.srcDirs.each {
+    from it
+  }
+}
+
+task bata(type: JavaExec) {
+    main = "eu.databata.engine.spring.PropagatorSpringExecutor"
+    classpath = sourceSets.main.runtimeClasspath
+    classpath.add(files('test_sqls'))
+    classpath.add(files('log4j-1.2.15.jar'))
+} 
+
+task bataSchema(type: JavaExec) {
+    main = "eu.databata.engine.util.PropagatorRecreateUserTool"
+    classpath = sourceSets.main.runtimeClasspath
+} 
+
+task bataExp(type: JavaExec) {
+standardInput = System.in
+    main = "eu.databata.engine.util.PropagatorTableExport"
+    classpath = sourceSets.main.runtimeClasspath
+} 
+
+jar {
+  include('**/*.java')
+  include('**/*.class')
+  include('**/*.xml')
+  include('**/*.sql')
+  include('**/*.properties')
+  exclude('databata.properties')
+  exclude('main/**')
+  manifest {
+    instruction 'Export-Package', 'META-INF.databata, eu.databata.engine, *'
+  }
+}
+

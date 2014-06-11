@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<antlib xmlns:dbpro="antlib:eu.webmedia.dbpropagation">
+	<!-- Script to submit scripts -->
+	<macrodef name="submit-script">
+		<attribute name="script" />
+		<attribute name="dir" />
+		<attribute name="dba.user" />
+		<attribute name="dba.password" />
+		<attribute name="db.connection-id" />
+		<sequential>
+			<exec dir="@{dir}" executable="sqlplus" failonerror="true">
+				<arg value="@{dba.user}/@{dba.password}@@@{db.connection-id}" />
+				<arg value="@@@{script}" />
+				<env key="NLS_LANG" value="AMERICAN_AMERICA.UTF8" />
+			</exec>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="recreate-db-user">
+		<attribute name="dba.user" default="${dba.user}" />
+		<attribute name="dba.password" default="${dba.password}" />
+		<attribute name="db.connection-id" default="${db.connection-id}" />
+		<attribute name="db.user" default="${db.user}" />
+		<attribute name="db.password" default="${db.password}" />
+		<text name="customCreate" optional="true" />
+		<sequential>
+			<property name="recreate-db-user.file" value="recreate-db-user.tmp.sql" />
+			<echo file="${recreate-db-user.file}">
+				ALTER SESSION SET CURRENT_SCHEMA = @{dba.user};
+				prompt Dropping schema @{db.user}
+				drop user @{db.user} cascade;
+				prompt 'Creating schema @{db.user}'
+				create user @{db.user} identified
+				by @{db.password};
+				grant connect to @{db.user};
+				grant resource to
+				@{db.user};
+				grant create view to @{db.user};
+				grant create any index to
+				@{db.user};
+				grant debug connect session to @{db.user};
+				@{customCreate}
+      </echo>
+			<dbpro:submit-script dir="."
+				script="${recreate-db-user.file}" dba.user="@{dba.user}"
+				dba.password="@{dba.password}" db.connection-id="@{db.connection-id}" />
+			<delete file="${recreate-db-user.file}" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="create-change-dir">
+		<attribute name="db-propagation.current.change.dir" />
+		<sequential>
+			<mkdir dir="@{db-propagation.current.change.dir}" />
+			<touch file="@{db-propagation.current.change.dir}/go.sql" />
+			<dbpro:write-order-key
+				db-propagation.current.change.dir="@{db-propagation.current.change.dir}" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="write-order-key">
+		<attribute name="db-propagation.current.change.dir" />
+		<sequential>
+			<tstamp>
+				<format property="db-propagation.order.key" pattern="yyyy-MM-dd-HH-mm-ss" />
+			</tstamp>
+			<concat destfile="@{db-propagation.current.change.dir}/order.txt">${db-propagation.order.key}</concat>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="imp" description="Imports a dump file into the database schema">
+		<attribute name="dba.user" default="${dba.user}" />
+		<attribute name="dba.password" default="${dba.password}" />
+		<attribute name="db.connection-id" default="${db.connection-id}" />
+		<attribute name="db.user" default="${db.user}" />
+		<sequential>
+			<input message="Please specify dump file to be imported (with extension)"
+				addproperty="dump.file.name" />
+			<input message="Please specify the name of the schema to be imported"
+				addproperty="dump.file.schema" defaultvalue="@{db.user}" />
+			<echo> Executing:</echo>
+			<echo> imp
+				@{dba.user}/@{dba.password}@@@{db.connection-id}
+				file=${dump.file.name} log=${dump.file.name}.log
+				fromuser=${dump.file.schema} touser=@{db.user}
+				ignore=y</echo>
+			<exec executable="imp">
+				<arg value="@{dba.user}/@{dba.password}@@@{db.connection-id}" />
+				<arg value="file=${dump.file.name}" />
+				<arg value="log=${dump.file.name}.log" />
+				<arg value="fromuser=${dump.file.schema}" />
+				<arg value="touser=@{db.user.name}" />
+				<arg value="ignore=y" />
+			</exec>
+		</sequential>
+	</macrodef>
+</antlib>

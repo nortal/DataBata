@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Healthcare Scripts Module">
+
+  <scriptdef name="hierarchicalproperties" language="javascript">
+    <attribute name="config" />
+    <attribute name="dir" />
+    <attribute name="file" />
+    <![CDATA[ 
+       importPackage(java.util);
+       importClass(java.io.File);
+       
+       config = attributes.get("config");
+       if (config == null) project.log("The 'config' parameter to the <hierarchicalproperties> task was not given");
+       
+       // Split config in pieces
+       tokenizer = new StringTokenizer(config, "/");
+       tokens = new ArrayList();
+       while (tokenizer.hasMoreTokens()){
+         tokens.add(tokenizer.nextToken());
+       }
+       
+       // Read configuration files from the primary directory
+       dir = attributes.get("dir");
+       file = attributes.get("file");
+       
+       if (dir == null) dir = ".";
+       if (file == null) file = "config.properties";
+       
+       for (i = tokens.size() - 1; i >= -1; i--){
+         // Construct a directory name as "{dir}/{token0}/{token1}/../{token_i}"
+         curDir = dir;
+         for (j = 0; j <= i; j++) curDir = curDir + '/' + tokens.get(j);
+         
+         // Append the file name to the directory
+         curFile = new File(curDir + '/' + file);
+         
+         // Read the properties from that file, if it exists.
+         if (curFile.exists()) {
+
+           project.log("Reading properties from " + curFile.toString());
+
+           property = project.createTask("property");
+           property.setFile(curFile);
+           property.perform();
+         }
+       }
+     ]]>
+  </scriptdef>
+
+  <!-- This script searches hierarchically for the required file(s) and copies it to a specified directory -->
+  <scriptdef name="copyfiles" language="javascript">
+    <attribute name="config" />
+    <attribute name="dir" />
+    <attribute name="files" />
+    <attribute name="todir" />
+    <attribute name="overwrite" />
+    <attribute name="failonerror" />
+        <![CDATA[ 
+      importPackage(java.util);
+      importClass(java.io.File);
+      
+      config = attributes.get("config");
+      files = attributes.get("files");
+      todir = attributes.get("todir");
+      overwrite = attributes.get("overwrite");
+      failonerror = attributes.get("failonerror");
+       
+      if (overwrite == null) overwrite = false;
+      else overwrite = (new java.lang.Boolean(overwrite)).booleanValue();
+        
+      if (failonerror == null) failonerror = true;
+      else failonerror = (new java.lang.Boolean(failonerror)).booleanValue();
+      
+        
+      // Split config in pieces
+      tokenizer = new StringTokenizer(config, "/");
+      tokens = new ArrayList();
+      while (tokenizer.hasMoreTokens()){
+        tokens.add(tokenizer.nextToken());
+      }
+      
+      fileTokenizer = new StringTokenizer(files, ",");
+      while (fileTokenizer.hasMoreTokens()) {
+        file = fileTokenizer.nextToken();
+              
+        // Search for file to copy from primary directory
+        dir = attributes.get("dir");
+        if (dir == null) dir = ".";
+        
+        for (i = tokens.size() - 1; i >= -1; i--){
+          // Construct a directory name as "{dir}/{token0}/{token1}/../{token_i}"
+          curDir = dir;
+          for (j = 0; j <= i; j++) curDir = curDir + '/' + tokens.get(j);
+          
+          // Append the file name to the directory
+          curFile = new File(curDir + '/' + file);
+  
+          // If the file exists, we copy it and exit loop
+          if (curFile.exists()) {
+            copy = project.createTask("copy");
+            copy.setFile(curFile);
+            copy.setTodir(new File(todir));
+            copy.setOverwrite(overwrite);
+            copy.setFailOnError(failonerror);
+            copy.perform();
+            break;
+          }
+        }
+      }
+    ]]>
+  </scriptdef>
+</project>

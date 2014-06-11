@@ -1,0 +1,35 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'war'
+apply plugin: 'jetty'
+
+repositories {
+    mavenCentral()
+    maven { url "https://code.lds.org/nexus/content/groups/main-repo" }
+    maven { url "http://repository.springsource.com/maven/bundles/release" }
+    maven { url "http://repository.springsource.com/maven/bundles/external" }
+}
+
+dependencies {
+	compile project(':databata-engine');
+
+	compile "javax.ws.rs:jsr311-api:1.1.1"
+
+	compile 'com.sun.jersey:jersey-server:1.16'
+	compile 'com.sun.jersey:jersey-core:1.16'
+	compile 'com.sun.jersey:jersey-client:1.16'
+	compile 'com.sun.jersey:jersey-servlet:1.16'
+	compile 'com.sun.jersey:jersey-json:1.16'
+	compile 'com.google.code.gson:gson:2.2.4'
+	compile 'org.springframework:spring-jdbc:3.2.5.RELEASE'
+	compile 'org.springframework:spring-expression:3.2.5.RELEASE'
+	compile 'org.springframework:spring-web:3.2.5.RELEASE'
+	compile 'com.sun.jersey.contribs:jersey-spring:1.9.1'
+	runtime 'com.oracle:ojdbc6:11.2.0.3'
+}
+
+sourceSets {
+    test {
+        runtimeClasspath = sourceSets.main.output + files(output.resourcesDir) + files(output.classesDir) + configurations.testRuntime  
+    }
+}

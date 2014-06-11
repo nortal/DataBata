@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="database-submit">
+  <description>
+    This file contains useful tasks and targets to be included in other files.
+  </description>
+
+
+  <!-- Script to submit scripts -->
+  <macrodef name="submit-script">
+    <attribute name="script" />
+    <attribute name="dir" />
+    <sequential>
+
+      <!-- Required stuff checks -->
+      <fail unless="dba.user" message="You must set the SQL*Plus username to submit the SQL scripts to the database!" />
+      <fail unless="dba.password" message="You must set the SQL*Plus password to submit the SQL scripts to the database!" />
+      <fail unless="db.connection-id" message="You must set the SQL*Plus connection identifier to submit the SQL scripts to the database!" />
+
+      <exec dir="@{dir}" executable="sqlplus" failonerror="true">
+        <arg value="${dba.user}/${dba.password}@${db.connection-id}" />
+        <arg value="@@@{script}" />
+        <env key="NLS_LANG" value="AMERICAN_AMERICA.UTF8" />
+      </exec>
+    </sequential>
+  </macrodef>
+
+  <target name="recreate-db-user" description="Drops and recreats the database user">
+    <property name="recreate-db-user.file" value="recreate-db-user.tmp.sql" />
+    <echo file="${recreate-db-user.file}" >
+      ALTER SESSION SET CURRENT_SCHEMA = ${dba.user};
+      prompt Dropping schema ${db.user}
+      drop user ${db.user} cascade;
+      prompt 'Creating schema ${db.user}'
+      create user ${db.user} identified by ${db.user};
+      grant connect to ${db.user};
+      grant resource to ${db.user};
+      grant create view to ${db.user};
+      grant create any index to ${db.user};
+      grant debug connect session to ${db.user};
+    </echo>
+    <submit-script dir="." script="${recreate-db-user.file}" />
+    <delete file="${recreate-db-user.file}" />
+  </target>
+
+  <target name="db-propagate" description="Executes db propagator">
+    <junit haltonfailure="no" printsummary="yes" showoutput="true" maxmemory="512m">
+      <formatter type="plain" usefile="false" />
+      <formatter type="xml" usefile="true" />
+      <classpath>
+        <path refid="test.class.path" />
+      </classpath>
+      <test name="eu.webmedia.baseapp.test.PropagatorSpringContextTask" />
+    </junit>
+  </target>
+
+  <property name="db-propagation.current.change.dir" location="${web-inf.dir}/db/changes/change_${change.id}" />
+  <target name="create-change-dir" description="Creates a db propagation directory corresponding to current change.">
+    <mkdir dir="${db-propagation.current.change.dir}" />
+    <touch file="${db-propagation.current.change.dir}/go.sql" />
+    <ant target="rewrite-order-key" />
+  </target>
+  <target name="write-order-key" unless="db-propagation.keep.order.key">
+    <tstamp>
+      <format property="db-propagation.order.key" pattern="yyyy-MM-dd-HH-mm-ss" />
+    </tstamp>
+    <concat destfile="${db-propagation.current.change.dir}/order.txt">${db-propagation.order.key}</concat>
+  </target>
+  <target name="rewrite-order-key" unless="db-propagation.keep.order.key" description="Renew order key in the current change directory">
+    <condition property="db-propagation.keep.order.key">
+      <not>
+        <available file="${db-propagation.current.change.dir}" type="dir" />
+      </not>
+    </condition>
+    <antcall target="write-order-key" />
+  </target>
+
+
+  <target name="exp" description="Generates a dump file from the current database schema">
+    <property name="dump.file.name" value="change_${change.id}.${ehl.database.application.username}" />
+    <echo> Executing:</echo>
+    <echo> exp
+      ${dba.user}/${dba.password}@${db.connection-id}
+      file=${dump.file.name}.dmp owner=${db.user} STATISTICS=NONE</echo>
+    <exec executable="exp">
+      <arg value="${dba.user}/${dba.password}@${db.connection-id}" />
+      <arg value="file=${dump.file.name}.dmp" />
+      <arg value="owner=${db.user}" />
+      <arg value="STATISTICS=NONE" />
+    </exec>
+    <zip destfile="${dump.file.name}.dmp.zip">
+      <fileset dir="." includes="${dump.file.name}.dmp" />
+    </zip>
+    <delete file="${dump.file.name}.dmp" />
+  </target>
+
+  <target name="imp" description="Imports a dump file into the database schema">
+    <input message="Please specify dump file to be imported (without extension)" addproperty="dump.file.name" />
+    <input message="Please specify the name of the schema to be imported" addproperty="dump.file.schema" defaultvalue="${db.user}" />
+    <unzip src="${dump.file.name}.dmp.zip" dest="." />
+    <submit-script dir="." script="${imp.submit.file}" />
+    <echo> Executing:</echo>
+    <echo> imp
+      ${dba.user}/${dba.password}@${db.connection-id}
+      file=${dump.file.name}.dmp log=${dump.file.name}.dmp.log fromuser=${dump.file.schema} touser=${db.user}
+      ignore=y</echo>
+    <exec executable="imp">
+      <arg value="${dba.user}/${dba.password}@${db.connection-id}" />
+      <arg value="file=${dump.file.name}.dmp" />
+      <arg value="log=${dump.file.name}.dmp.log" />
+      <arg value="fromuser=${dump.file.schema}" />
+      <arg value="touser=${db.user}" />
+      <arg value="ignore=y" />
+    </exec>
+    <delete file="${imp.submit.file}" />
+    <delete file="${dump.file.name}.dmp" />
+  </target>
+</project>
