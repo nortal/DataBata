@@ -1,13 +1,14 @@
 package eu.databata.engine.dao;
 
-import eu.databata.engine.util.PropagationUtils;
-
 import eu.databata.engine.model.HistoryLogEntry;
+import eu.databata.engine.model.PropagationHistory;
 import eu.databata.engine.model.PropagationObject;
 import eu.databata.engine.model.PropagationObject.ObjectType;
-
+import eu.databata.engine.model.PropagationSqlLog;
+import eu.databata.engine.util.PropagationUtils;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -90,22 +91,29 @@ public class PropagationDAO extends JdbcDaoSupport {
   }
 
   public List<PropagationObject> getPropagationObjects() {
-    String sql = "SELECT * FROM " + propagationObjectsTable + " WHERE object_type IN (?,?,?,?,?,?)";
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Loading propagation objects: " + sql);
-    }
-
     try {
-      return getJdbcTemplate().query(sql,
-                                     new Object[] { ObjectType.VIEW.name(), ObjectType.PACKAGE_HEADER.name(),
-                                                   ObjectType.PACKAGE.name(), ObjectType.TRIGGER.name(),
-                                                   ObjectType.PROCEDURE.name(), ObjectType.FUNCTION.name() },
-                                     new PropagationObjectRowMapper());
+      return getJdbcTemplate().query("SELECT * FROM " + propagationObjectsTable, new PropagationObjectRowMapper());
     } catch (final BadSqlGrammarException ex) {
       LOG.error(ex);
-      LOG.info("Creating " + propagationObjectsTable + ", because it does not exist.");
-      createPropagationObjectsTable();
       return new ArrayList<PropagationObject>();
+    }
+  }
+
+  public List<PropagationHistory> getHistory() {
+    try {
+      return getJdbcTemplate().query("SELECT * FROM " + changeHistoryTable, new PropagationHisotryRowMapper());
+    } catch (final BadSqlGrammarException ex) {
+      LOG.error(ex);
+      return Collections.emptyList();
+    }
+  }
+
+  public List<PropagationSqlLog> getHistoryLog() {
+    try {
+      return getJdbcTemplate().query("SELECT * FROM " + historyLogTable, new PropagationSqlLogRowMapper());
+    } catch (final BadSqlGrammarException ex) {
+      LOG.error(ex);
+      return Collections.emptyList();
     }
   }
 
@@ -160,7 +168,7 @@ public class PropagationDAO extends JdbcDaoSupport {
   }
 
   public String getLockToken() {
-    return (String) getJdbcTemplate().queryForObject("SELECT token FROM " + lockTable, String.class);
+    return getJdbcTemplate().queryForObject("SELECT token FROM " + lockTable, String.class);
   }
 
   public int updateLock(String token) {
@@ -177,14 +185,15 @@ public class PropagationDAO extends JdbcDaoSupport {
   }
 
   public void insertHistoryLog(String moduleName, HistoryLogEntry entry) {
-    String sqlText = StringUtils.abbreviate(entry.sqlText, MAX_SQLTEXT_LENGTH);
-    String errorText = StringUtils.abbreviate(entry.sqlErrorText, MAX_ERRORTEXT_LENGTH);
+    String sqlText = StringUtils.abbreviate(entry.getSqlText(), MAX_SQLTEXT_LENGTH);
+    String errorText = StringUtils.abbreviate(entry.getSqlErrorText(), MAX_ERRORTEXT_LENGTH);
     getJdbcTemplate().update("INSERT INTO "
                                  + historyLogTable
                                  + "(MODULE_NAME, DB_CHANGE_CODE, SQL_TEXT, ROWS_UPDATED, ERROR_CODE, ERROR_TEXT, UPDATE_TIME, EXECUTION_TIME) VALUES(?,?,?,?,?,?,?,?) ",
-                             new Object[] { moduleName, entry.dbChange == null ? "" : entry.dbChange,
-                                           sqlText == null ? "" : sqlText, entry.sqlRows, entry.sqlErrorCode,
-                                           errorText == null ? "" : errorText, entry.date, entry.executionTime });
+                             new Object[] { moduleName, entry.getDbChange() == null ? "" : entry.getDbChange(),
+                                           sqlText == null ? "" : sqlText, entry.getSqlRows(), entry.getSqlErrorCode(),
+                                           errorText == null ? "" : errorText, entry.getDate(),
+                                           entry.getExecutionTime() });
   }
 
   public void updateVersion() {
