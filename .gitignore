@@ -12,6 +12,7 @@
 hs_err_pid*
 databata-engine/src/main/resources/databata.properties
 databata-console/src/main/resources/databata.properties
+databata-console/src/main/resources/databata.properties
 gradle.properties
 .gradle
 
