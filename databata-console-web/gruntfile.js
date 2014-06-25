@@ -173,7 +173,10 @@ module.exports = function (grunt) {
       templates: {
         options: {
           module: getTemplatesModuleName(),
-          base: 'build'
+          base: 'build',
+          rename: function (moduleName) {
+              return '/' + moduleName;
+            }
         },
         src: [ 'build/templates/**/*.html' ],
         dest: 'build/templates.js'

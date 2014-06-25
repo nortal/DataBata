@@ -33,3 +33,5 @@ sourceSets {
         runtimeClasspath = sourceSets.main.output + files(output.resourcesDir) + files(output.classesDir) + configurations.testRuntime  
     }
 }
+
+jettyRun.contextPath = ''

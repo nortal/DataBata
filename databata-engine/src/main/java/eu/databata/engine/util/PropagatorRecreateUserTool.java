@@ -56,7 +56,7 @@ public class PropagatorRecreateUserTool {
           + "' cannot be read from classpath. Trying to load default submit file.");
     }
     if (fileContent == null || "".equals(fileContent)) {
-      String defaultSubmitFileName = "META-INF/databata/" + databaseCode + "_recreate_user.default.sql";
+      String defaultSubmitFileName = "META-INF/dbpro/" + databaseCode + "_recreate_user.default.sql";
       try {
         fileContent = getFileContent(classLoader, defaultSubmitFileName);
       } catch (IOException e) {
@@ -78,12 +78,12 @@ public class PropagatorRecreateUserTool {
 
         @Override
         public void handleExecuteSuccess(String sql, int arg1, double arg2) {
-          LOG.debug("Sql is sucessfully executed \n ======== \n" + sql + "\n ======== \n");
+          LOG.info("Sql is sucessfully executed \n ======== \n" + sql + "\n ======== \n");
         }
 
         @Override
         public void handleException(SQLException arg0, String sql) throws SQLException {
-          LOG.debug("Sql returned error \n ======== \n" + sql + "\n ======== \n");
+          LOG.info("Sql returned error \n ======== \n" + sql + "\n ======== \n");
         }
       }, null);
     } catch (IOException e) {

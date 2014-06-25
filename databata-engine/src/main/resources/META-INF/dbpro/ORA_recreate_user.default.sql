@@ -1,4 +1,4 @@
-{call META2.kill_user_sessions('#{db.propagation.user}')};
+--{call META2.kill_user_sessions('#{db.propagation.user}')};
 drop user #{db.propagation.user} cascade;
 
 create user #{db.propagation.user} identified by #{db.propagation.password};
