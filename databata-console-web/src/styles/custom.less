@@ -45,6 +45,8 @@
 @import "@{base-url}utilities.less";
 @import "@{base-url}responsive-utilities.less";
 
+@import "../../vendor_lib/highlightjs/styles/obsidian.css";
+
 .modal-backdrop.am-fade {
   opacity: .5;
   transition: opacity .15s linear;
@@ -58,6 +60,30 @@
     opacity: .5;
     &.ng-leave-active {
       opacity: 0;
+    }
+  }
+}
+
+.unselectable {
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.log {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  code {
+    font-family: monospace !important;
+    display: block !important;
+    .label {
+      margin-right: 3px;
+    }
+    &:hover {
+      background-color: @gray;
     }
   }
 }
@@ -77,6 +103,10 @@
 
 .mb10 {
   margin-bottom: 10px;
+}
+
+.mr10 {
+  margin-right: 10px;
 }
 
 .anchor {

@@ -14,23 +14,25 @@ html(lang="#{default_lang}",ng-app="#{ng_root_app}",ng-controller="#{ng_root_con
     link(rel="stylesheet",type="text/css",href="/#{style_file}")
   body
 
-  .navbar.navbar-default.navbar-fixed-top(bs-navbar="")
+  .navbar.navbar-default.navbar-fixed-top
     .container
       .navbar-header
+        button.navbar-toggle(type="button",data-toggle="collapse",data-target="#navbar-collapse")
+          span.sr-only Toggle navigation
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
         a.navbar-brand.title(href="/") DataBata
         ul.nav.navbar-left.nav-module
           li
             span.label.label-danger(ng-if="data.module !== 'ALL'")
               | {{data.module}} &nbsp;
               i.fa.fa-times.click(ng-click="clickModule('ALL')")
-      .hidden-xs
-        ul.nav.navbar-nav.navbar-right
-          li: a(href="#info"): i.fa.fa-info-circle.fa-2x
-          li: a(href="#logs"): i.fa.fa-list-alt.fa-2x
-          li: a(href="#history"): i.fa.fa-history.fa-2x
-          li: a(href="#objects"): i.fa.fa-cubes.fa-2x
-
-  #info.anchor
+      #navbar-collapse.collapse.navbar-collapse
+        form.navbar-form.navbar-right(role="search")
+          .form-group.logs-search
+            i.fa.fa-times.click(ng-click="data.logs_filter.$ = ''")
+            input.form-control(type="text",placeholder="search text",ng-model="data.logs_filter.$",ng-model-options="{ debounce: 1000 }")
   .container
     .row
       .col-sm-5
@@ -53,25 +55,29 @@ html(lang="#{default_lang}",ng-app="#{ng_root_app}",ng-controller="#{ng_root_con
           .col-xs-12: button.btn.btn-default(type="button") Export
       .col-sm-7.mt10
         button.btn.btn-primary.btn-xs.btn-module(type="button",ng-click="clickModule(item)",ng-class="{'btn-info': item === data.module}",ng-repeat="item in data.modules") {{item}}
-
-
-  #logs.anchor
   .section_logs_title(ng-show="data.logs.length > 0")
     .container: .row: .col-sm-12
       h3.pull-right: b LOGS<small class="sub">{{logs_filtered.length < data.logs.length ? logs_filtered.length + ' of ' : ''}}{{data.logs.length}}</small>
 
   .section_logs(ng-show="data.logs.length > 0")
     .container
-      .row.mt10.mb10
-        .col-xs-8
-          .btn-group
-            button.btn.btn-default(type="button",ng-click="data.logs_limit = item",ng-class="{'active': item === data.logs_limit}",ng-repeat="item in data.logs_limits") {{item}}
-        .col-xs-4
-          .logs-search
-            i.fa.fa-times.click(ng-click="data.logs_filter.$ = ''")
-            input.form-control(type="text",placeholder="search text",ng-model="data.logs_filter.$",ng-model-options="{ debounce: 1000 }")
       .row: .col-lg-12
-        table.table.table-hover.logs_table
+        pre.mt10.mb10.log(infinite-scroll="showMoreLogs()",infinite-scroll-distance="1")
+          code.hljs.sql(ng-repeat="item in logs_filtered = (data.logs | filter:data.logs_filter | orderBy:data.logs_order:data.logs_reverse) | limitTo:data.logs_limit")
+            //.log-desc.unselectable
+              .btn-group.btn-group-xs
+                button.btn.btn-default.disabled(type="button") {{formatDate(item.updateTime)}}
+                //span.label.label-default(ng-if="item.dbChangeCode") {{item.dbChangeCode}}
+                //span.label.label-primary(ng-if="data.module === 'ALL'") {{item.moduleName}}
+                button.btn.btn-default.disabled(type="button",ng-if="item.rowsUpdated > 0") {{item.rowsUpdated}}r
+                button.btn.btn-default.disabled(type="button",ng-if="item.executionTime > 0") {{item.executionTime}}s
+            span.label.label-primary.pull-right(data-placement="left",bs-tooltip="getLogData(item)")
+              i.fa.fa-info
+            span.label.label-success.pull-right(ng-if="item.rowsUpdated > 1") {{item.rowsUpdated}} rows
+            span.label.pull-right(ng-if="item.executionTime > 1",ng-class="{'label-warning': item.executionTime >= 1 && item.executionTime < 10, 'label-danger': item.executionTime >= 10}") {{item.executionTime}}sec
+            span(ng-bind-html="highlighted(item)")
+
+        //table.table.table-hover.logs_table
           thead
             tr
               th(colspan=2) {{logs_filtered.length}} rows
@@ -107,45 +113,25 @@ html(lang="#{default_lang}",ng-app="#{ng_root_app}",ng-controller="#{ng_root_con
               td {{item.rowsUpdated > 0 ? item.rowsUpdated : ''}}
               td {{item.dbChangeCode}}
               td(ng-if="data.module === 'ALL'") {{item.moduleName}}
-  .container
+  //.container
     .row
       .col-sm-6
         #history.anchor
-        h3.history_title: b HISTORY<small class="sub">{{data.history_filtered_count < data.history.length ? data.history_filtered_count + ' of ' : ''}}{{data.history.length}}</small>
+        h3.history_title: b HISTORY<small class="sub">{{data.history_grouped_count < data.history.length ? data.history_grouped_count + ' of ' : ''}}{{data.history.length}}</small>
 
         .tree
           ul
-            li
+            li(ng-repeat="(group1, items) in data.history_grouped")
               span
                 i.fa.fa-calendar
-                | 2013, Week 2
+                | &nbsp;{{group1}}
               ul
-                li
-                  span.badge.badge-success
-                    i.icon-minus-sign
-                    | Monday, January 14: 8.00 hours
-                  ul
-                    li
-                      span
-                        i.icon-time
-                        | 6.00
-                      | &ndash;
-                      a(href="") Altered code...
-                    li
-                      span
-                        i.icon-time
-                        | 6.00
-                      | &ndash;
-                      a(href="") Altered code...
-
-        //ul.list-unstyled
-          li(ng-repeat="(group, items) in data.history_filtered")
-            b {{group}}
-            ul.list-unstyled
-              li(ng-repeat="item in items")
-                | {{formatHistoryTime(item.change_time)}}
-                b &nbsp;{{item.code}}
-                span(ng-if="data.module === 'ALL'") &nbsp;({{item.module_name}})
+                li(ng-repeat="item in items")
+                  span
+                    i.fa.fa-calendar
+                    | {{item.changeTime}}
+                  | &ndash; {{item.code}}
+                  span(ng-if="data.module === 'ALL'") &nbsp;({{item.moduleName}})
       .col-sm-6
         #objects.anchor
         h3.objects_title.text-right: b OBJECTS<small class="sub">{{objects_filtered.length < data.objects.length ? objects_filtered.length + ' of ' : ''}}{{data.objects.length}}</small>
