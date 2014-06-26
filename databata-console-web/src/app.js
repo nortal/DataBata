@@ -14,7 +14,6 @@ app.controller('RootCtrl', function ($scope, $resource, $modal, $location, $anch
       db_history = _.sortBy(db_history, function(item) { return item.changeTime; });
       db_history.reverse();
       data.history.push.apply(data.history, db_history);
-      groupHistory();
     });
     var db_objects = api.objects(function() {
       data.objects.push.apply(data.objects, db_objects);
@@ -23,17 +22,6 @@ app.controller('RootCtrl', function ($scope, $resource, $modal, $location, $anch
       data.logs.push.apply(data.logs, db_logs);
       var modules = _.pluck(data.logs, 'moduleName');
       data.modules.push.apply(data.modules, _.uniq(modules));
-    });
-  }
-  
-  function groupHistory(module) {
-    var filtered = data.history;
-    if (module) {
-      filtered = _.where(filtered, {module_name: module});
-    }
-    data.history_grouped_count = filtered.length;
-    data.history_grouped = _.groupBy(filtered, function(item) {
-      return moment(item.changeTime).format("YYYY MMMM");
     });
   }
 
@@ -60,16 +48,17 @@ app.controller('RootCtrl', function ($scope, $resource, $modal, $location, $anch
   });
 
   var data = {
+    tab: 'log',
     info: {},
     history: [],
-    history_grouped: [],
-    history_grouped_count: 0,
+    history_order: 'changeTime',
+    history_reverse: true,
+    history_filter: {},
     objects: [],
     objects_order: 'objectName',
     objects_reverse: false,
     objects_filter: {},
     logs: [],
-    logs_limits: [15,50,150,500],
     logs_limit: 25,
     logs_order: 'updateTime',
     logs_reverse: true,
@@ -115,8 +104,10 @@ app.controller('RootCtrl', function ($scope, $resource, $modal, $location, $anch
 
   $scope.showLog = function(object_name) {
     data.logs_filter.$ = object_name;
-    $location.hash('logs');
+    data.tab = 'log';
+    $location.hash('content');
     $anchorScroll();
+    $location.hash('');
   }
 
   $scope.clickModule = function(module) {
@@ -124,11 +115,11 @@ app.controller('RootCtrl', function ($scope, $resource, $modal, $location, $anch
     if (module === 'ALL') {
       data.logs_filter.moduleName = '';
       data.objects_filter.moduleName = '';
-      groupHistory();
+      data.history_filter.moduleName = '';
     } else {
       data.logs_filter.moduleName = module;
       data.objects_filter.moduleName = module;
-      groupHistory(module);
+      data.history_filter.moduleName = module;
     }
   }
 

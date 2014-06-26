@@ -13,7 +13,7 @@ html(lang="#{default_lang}",ng-app="#{ng_root_app}",ng-controller="#{ng_root_con
     meta(name="apple-mobile-web-app-capable",content="yes")
     link(rel="stylesheet",type="text/css",href="/#{style_file}")
   body
-
+  #up.anchor
   .navbar.navbar-default.navbar-fixed-top
     .container
       .navbar-header
@@ -30,7 +30,7 @@ html(lang="#{default_lang}",ng-app="#{ng_root_app}",ng-controller="#{ng_root_con
               i.fa.fa-times.click(ng-click="clickModule('ALL')")
       #navbar-collapse.collapse.navbar-collapse
         form.navbar-form.navbar-right(role="search")
-          .form-group.logs-search
+          .form-group.search_input
             i.fa.fa-times.click(ng-click="data.logs_filter.$ = ''")
             input.form-control(type="text",placeholder="search text",ng-model="data.logs_filter.$",ng-model-options="{ debounce: 1000 }")
   .container
@@ -51,91 +51,61 @@ html(lang="#{default_lang}",ng-app="#{ng_root_app}",ng-controller="#{ng_root_con
         .row(ng-show="data.info.service")
           .col-xs-2.text-right.text-muted: b service
           .col-xs-10(ng-bind="data.info.service")
-        .row.mt10
+        //.row.mt10
           .col-xs-12: button.btn.btn-default(type="button") Export
       .col-sm-7.mt10
         button.btn.btn-primary.btn-xs.btn-module(type="button",ng-click="clickModule(item)",ng-class="{'btn-info': item === data.module}",ng-repeat="item in data.modules") {{item}}
-  .section_logs_title(ng-show="data.logs.length > 0")
-    .container: .row: .col-sm-12
-      h3.pull-right: b LOGS<small class="sub">{{logs_filtered.length < data.logs.length ? logs_filtered.length + ' of ' : ''}}{{data.logs.length}}</small>
-
-  .section_logs(ng-show="data.logs.length > 0")
+  #content.anchor
+  .container: .row
+    .col-sm-4.click.log_title(ng-class="{'active': data.tab === 'log'}",ng-click="data.tab = 'log'")
+      h3.text-left: b
+        | LOGS<small class="sub">{{data.logs_filtered.length < data.logs.length ? data.logs_filtered.length + ' of ' : ''}}{{data.logs.length}}</small>
+    .col-sm-4.click.history_title(ng-class="{'active': data.tab === 'history'}",ng-click="data.tab = 'history'")
+      h3.text-center: b
+        | HISTORY<small class="sub">{{data.history_filtered.length < data.history.length ? data.history_filtered.length + ' of ' : ''}}{{data.history.length}}</small>
+    .col-sm-4.click.object_title(ng-class="{'active': data.tab === 'object'}",ng-click="data.tab = 'object'")
+      h3.text-right: b
+        | OBJECTS<small class="sub">{{data.objects_filtered.length < data.objects.length ? data.objects_filtered.length + ' of ' : ''}}{{data.objects.length}}</small>
+  .section_log(ng-show="data.tab === 'log'")
     .container
-      .row: .col-lg-12
-        pre.mt10.mb10.log(infinite-scroll="showMoreLogs()",infinite-scroll-distance="1")
-          code.hljs.sql(ng-repeat="item in logs_filtered = (data.logs | filter:data.logs_filter | orderBy:data.logs_order:data.logs_reverse) | limitTo:data.logs_limit")
-            //.log-desc.unselectable
-              .btn-group.btn-group-xs
-                button.btn.btn-default.disabled(type="button") {{formatDate(item.updateTime)}}
-                //span.label.label-default(ng-if="item.dbChangeCode") {{item.dbChangeCode}}
-                //span.label.label-primary(ng-if="data.module === 'ALL'") {{item.moduleName}}
-                button.btn.btn-default.disabled(type="button",ng-if="item.rowsUpdated > 0") {{item.rowsUpdated}}r
-                button.btn.btn-default.disabled(type="button",ng-if="item.executionTime > 0") {{item.executionTime}}s
+      .row: .col-lg-12(ng-show="data.logs_filtered.length > 0")
+        pre.mt10.mb10.log(infinite-scroll="showMoreLogs()",infinite-scroll-distance="1",infinite-scroll-disabled="data.tab !== 'log'")
+          code.hljs.sql(ng-repeat="item in data.logs_filtered = (data.logs | filter:data.logs_filter | orderBy:data.logs_order:data.logs_reverse) | limitTo:data.logs_limit")
             span.label.label-primary.pull-right(data-placement="left",bs-tooltip="getLogData(item)")
               i.fa.fa-info
             span.label.label-success.pull-right(ng-if="item.rowsUpdated > 1") {{item.rowsUpdated}} rows
             span.label.pull-right(ng-if="item.executionTime > 1",ng-class="{'label-warning': item.executionTime >= 1 && item.executionTime < 10, 'label-danger': item.executionTime >= 10}") {{item.executionTime}}sec
             span(ng-bind-html="highlighted(item)")
-
-        //table.table.table-hover.logs_table
+  .section_log(ng-show="data.tab === 'history'")
+    .container
+      .row: .col-lg-12(ng-show="data.history_filtered.length > 0")
+        table.table.table-hover.history_table.mt10.mb10
           thead
             tr
-              th(colspan=2) {{logs_filtered.length}} rows
               th
-                a(href="",ng-click="data.logs_order='updateTime'; data.logs_reverse = !data.logs_reverse")
-                  | WHEN &nbsp;
-                  i.fa.fa-sort-desc(ng-show="data.logs_order == 'updateTime' && data.logs_reverse")
-                  i.fa.fa-sort-asc(ng-show="data.logs_order == 'updateTime' && !data.logs_reverse")
+                a(href="",ng-click="data.history_order='code'; data.history_reverse = !data.history_reverse")
+                  | CHANGE CODE &nbsp;
+                  i.fa.fa-sort-desc(ng-show="data.history_order == 'code' && data.history_reverse")
+                  i.fa.fa-sort-asc(ng-show="data.history_order == 'code' && !data.history_reverse")
+              th(ng-if="data.module === 'ALL'")
+                a(href="",ng-click="data.history_order='moduleName'; data.history_reverse = !data.history_reverse")
+                  | MODULE &nbsp;
+                  i.fa.fa-sort-desc(ng-show="data.history_order == 'moduleName' && data.history_reverse")
+                  i.fa.fa-sort-asc(ng-show="data.history_order == 'moduleName' && !data.history_reverse")
               th
-                a(href="",ng-click="data.logs_order='executionTime'; data.logs_reverse = !data.logs_reverse")
-                  | MS &nbsp;
-                  i.fa.fa-sort-desc(ng-show="data.logs_order == 'executionTime' && data.logs_reverse")
-                  i.fa.fa-sort-asc(ng-show="data.logs_order == 'executionTime' && !data.logs_reverse")
-              th
-                a(href="",ng-click="data.logs_order='rowsUpdated'; data.logs_reverse = !data.logs_reverse")
-                  | ROWS &nbsp;
-                  i.fa.fa-sort-desc(ng-show="data.logs_order == 'rowsUpdated' && data.logs_reverse")
-                  i.fa.fa-sort-asc(ng-show="data.logs_order == 'rowsUpdated' && !data.logs_reverse")
-              th change
-              th(ng-if="data.module === 'ALL'") module
+                a(href="",ng-click="data.history_order='changeTime'; data.history_reverse = !data.history_reverse")
+                  | CHANGE TIME &nbsp;
+                  i.fa.fa-sort-desc(ng-show="data.history_order == 'changeTime' && data.history_reverse")
+                  i.fa.fa-sort-asc(ng-show="data.history_order == 'changeTime' && !data.history_reverse")
           tbody
-            tr(ng-repeat="item in logs_filtered = (data.logs | filter:data.logs_filter | orderBy:data.logs_order:data.logs_reverse) | limitTo:data.logs_limit")
-              td {{$index + 1}}
-              td
-                span.click(ng-if="item.sqlText",ng-click="modal('SQL', item.sqlText)")
-                  i.fa.fa-database
-                | &nbsp;&nbsp;&nbsp;
-                span.click.text-danger(ng-if="item.error_code",ng-click="modal('ERROR ' + item.errorCode, item.errorText)")
-                  i.fa.fa-exclamation-circle.text-danger
-                  b &nbsp;{{item.errorCode}}
-              td {{formatDate(item.updateTime)}}
-              td {{item.executionTime > 0 ? item.executionTime : ''}}
-              td {{item.rowsUpdated > 0 ? item.rowsUpdated : ''}}
-              td {{item.dbChangeCode}}
+            tr(ng-repeat="item in data.history_filtered = (data.history | filter:data.history_filter | orderBy:data.history_order:data.history_reverse)")
+              td: span.pull-left.click(ng-click="showLog(item.code)") {{item.code}}
               td(ng-if="data.module === 'ALL'") {{item.moduleName}}
-  //.container
-    .row
-      .col-sm-6
-        #history.anchor
-        h3.history_title: b HISTORY<small class="sub">{{data.history_grouped_count < data.history.length ? data.history_grouped_count + ' of ' : ''}}{{data.history.length}}</small>
-
-        .tree
-          ul
-            li(ng-repeat="(group1, items) in data.history_grouped")
-              span
-                i.fa.fa-calendar
-                | &nbsp;{{group1}}
-              ul
-                li(ng-repeat="item in items")
-                  span
-                    i.fa.fa-calendar
-                    | {{item.changeTime}}
-                  | &ndash; {{item.code}}
-                  span(ng-if="data.module === 'ALL'") &nbsp;({{item.moduleName}})
-      .col-sm-6
-        #objects.anchor
-        h3.objects_title.text-right: b OBJECTS<small class="sub">{{objects_filtered.length < data.objects.length ? objects_filtered.length + ' of ' : ''}}{{data.objects.length}}</small>
-        table.table.table-hover.objects_table(ng-show="objects_filtered.length > 0")
+              td {{formatDate(item.changeTime)}}
+  .section_log(ng-show="data.tab === 'object'")
+    .container
+      .row: .col-lg-12(ng-show="data.objects_filtered.length > 0")
+        table.table.table-hover.object_table.mt10.mb10
           thead
             tr
               th
@@ -159,7 +129,7 @@ html(lang="#{default_lang}",ng-app="#{ng_root_app}",ng-controller="#{ng_root_con
                   i.fa.fa-sort-desc(ng-show="data.objects_order == 'objectType' && data.objects_reverse")
                   i.fa.fa-sort-asc(ng-show="data.objects_order == 'objectType' && !data.objects_reverse")
           tbody
-            tr(ng-repeat="item in objects_filtered = (data.objects | filter:data.objects_filter | orderBy:data.objects_order:data.objects_reverse)")
+            tr(ng-repeat="item in data.objects_filtered = (data.objects | filter:data.objects_filter | orderBy:data.objects_order:data.objects_reverse)")
               td(colspan=4)
                 span.pull-left.click(ng-click="showLog(item.objectName)") {{item.objectName}}
                 span.pull-right {{item.objectType}}
@@ -174,10 +144,9 @@ html(lang="#{default_lang}",ng-app="#{ng_root_app}",ng-controller="#{ng_root_con
       .col-xs-10
         ul.list-unstyled.list-inline
           li: a(href="http://blog.nortal.com/") Blog
-          li: a(href="https://github.com/nortal/databata/") GitHub
-          li: a(href="#") Donate
-          li: a(href="https://github.com/nortal/databata/LICENSE") MIT License
-          li: a(href="mailto:maksim.boiko@nortal.com") Support
+          li: a(href="https://github.com/nortal/DataBata/") GitHub
+          li: a(href="https://github.com/nortal/DataBata/blob/master/LICENSE") MIT License
+          li: a(href="https://github.com/nortal/DataBata/issues") Support
 
   each js_file in js_files
     script(type="text/javascript", src="/#{js_file}")
