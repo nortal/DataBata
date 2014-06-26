@@ -20,19 +20,17 @@ Installation
 ========
 Spring Framework: simply create following bean in your spring configuration
 ``` xml
-<bean id="propagator" class="eu.databata.engine.spring.PropagatorSpringInstance"
-		init-method="init">
-		<property name="jdbcTemplate" ref="jdbcTemplate" />
-		<property name="transactionManager" ref="transactionManager" />
-
-		<property name="changes" value="WEB-INF/db/changes" />
-		<property name="packageDir" value="WEB-INF/db/packages" />
-		<property name="viewDir" value="WEB-INF/db/views" />
-		<property name="triggerDir" value="WEB-INF/db/triggers" />
-		<property name="useTestData" value="false" />
-		<property name="disableDbPropagation" value="false" />
-		<property name="enableAutomaticTransformation" value="true" />
-		<property name="moduleName" value="DATABATA_TEST" />
+<bean id="propagator" class="eu.databata.engine.spring.PropagatorSpringInstance" init-method="init">
+    <property name="jdbcTemplate" ref="jdbcTemplate" />
+    <property name="transactionManager" ref="transactionManager" />
+    <property name="changes" value="WEB-INF/db/changes" />
+    <property name="packageDir" value="WEB-INF/db/packages" />
+    <property name="viewDir" value="WEB-INF/db/views" />
+    <property name="triggerDir" value="WEB-INF/db/triggers" />
+    <property name="useTestData" value="false" />
+    <property name="disableDbPropagation" value="false" />
+    <property name="enableAutomaticTransformation" value="true" />
+    <property name="moduleName" value="DATABATA_TEST" />
 </bean>
 ```
 **NB!** You need to reference [jdbcTemplate](http://docs.spring.io/spring/docs/3.0.x/spring-framework-reference/html/jdbc.html) and [transactionManager](http://docs.spring.io/spring/docs/3.0.x/spring-framework-reference/html/transaction.html) beans in your configurations. And sql-files location is inside WEB-INF directory of your web application. 
