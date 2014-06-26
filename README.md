@@ -3,7 +3,7 @@ DataBata
 
 DataBata is a tool for incremental database update based on HSQLDB SqlTool created for all types of workers: DBA, developers and QA. Currently Oracle and Postgres databases are supported. We plan to support all general RDBMSes.
 
-For monitoring purposes there is DataBata Web Console.
+For monitoring purposes there is **DataBata Web Console**.
 
 [![logs](web_console_screen1_th.png)](https://raw.githubusercontent.com/nortal/DataBata/master/web_console_screen1.png)
 [![history](web_console_screen2_th.png)](https://raw.githubusercontent.com/nortal/DataBata/master/web_console_screen2.png)
