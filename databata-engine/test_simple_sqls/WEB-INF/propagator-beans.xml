@@ -24,8 +24,10 @@
 		<property name="useTestData" value="${db.propagation.test.data.used}" />
 		<property name="disableDbPropagation" value="${db.propagation.disable}" />
 		<property name="environmentSql" value="${db.propagation.environment}" />
+		<property name="enableAutomaticTransformation" value="true" />
 	    <property name="revalidationStatement" value="${db.propagation.revalidation}" />
 		<property name="moduleName" value="${db.propagation.module.name}" />
+    <property name="versionProvider" ref="versionProvider" />
 	</bean>
   
   <bean id="versionProvider" class="eu.databata.engine.version.StandardVersionProvider">
