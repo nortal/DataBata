@@ -5,14 +5,9 @@ DataBata is a tool for incremental database update based on HSQLDB SqlTool creat
 
 For monitoring purposes there is DataBata Web Console.
 
-LOGS
-![alt tag](web_console_screen1.png)
-
-HISTORY
-![alt tag](web_console_screen1.png)
-
-OBJECTS
-![alt tag](web_console_screen1.png)
+[![logs](web_console_screen1_th.png)](web_console_screen1.png)
+[![history](web_console_screen2_th.png)](web_console_screen2.png)
+[![objects](web_console_screen3_th.png)](web_console_screen3.png)
 
 What do you need to run DataBata?
 ========
