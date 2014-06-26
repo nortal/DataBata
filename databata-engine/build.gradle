@@ -52,7 +52,7 @@ jar.doFirst {
 task bata(type: JavaExec) {
     main = "eu.databata.engine.spring.PropagatorSpringExecutor"
     classpath = sourceSets.main.runtimeClasspath
-    classpath.add(files('test_sqls'))
+    classpath.add(files('test_simple_sqls'))
     classpath.add(files('log4j-1.2.15.jar'))
 } 
 

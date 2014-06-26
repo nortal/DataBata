@@ -1,2 +1,2 @@
--- such error will be ignored by Propagator.
+-- such error will be ignored by DataBata.
 drop table t;

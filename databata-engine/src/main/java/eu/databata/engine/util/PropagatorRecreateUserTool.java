@@ -47,7 +47,7 @@ public class PropagatorRecreateUserTool {
     String databaseCode = PropagationUtils.getDatabaseCode(databaseName);
     LOG.info("Database with code '" + databaseCode + "' is identified.");
 
-    String submitFileName =  "META-INF/dbpro/" + databaseCode + "_recreate_user.sql";
+    String submitFileName =  "META-INF/databata/" + databaseCode + "_recreate_user.sql";
     String fileContent = "";
     try {
       fileContent = getFileContent(classLoader, submitFileName);
@@ -56,7 +56,7 @@ public class PropagatorRecreateUserTool {
           + "' cannot be read from classpath. Trying to load default submit file.");
     }
     if (fileContent == null || "".equals(fileContent)) {
-      String defaultSubmitFileName = "META-INF/dbpro/" + databaseCode + "_recreate_user.default.sql";
+      String defaultSubmitFileName = "META-INF/databata/" + databaseCode + "_recreate_user.default.sql";
       try {
         fileContent = getFileContent(classLoader, defaultSubmitFileName);
       } catch (IOException e) {

@@ -1,1 +1,1 @@
-intert into databata (x) values(1);
+--intert into databata (x) values(1);
