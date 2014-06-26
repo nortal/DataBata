@@ -48,3 +48,26 @@ To run DataBata you need following dependencies in your classpath:
 ```
 - also include [sqltool.jar](databata-engine/lib/sqltool.jar) and [databata.jar](databata-engine/lib/databata.jar) from DataBata source.
 
+Run examples in project
+========
+
+TODO instructions
+
+Roadmap
+========
+
+## Engine
+* 1
+* 2
+* 3
+* 4
+* 5
+* 6
+
+## Web Console
+* Show message when active lock.
+* Show message when new data is avaliable.
+* Possibility to have more than 1 connection.
+* Possibility to add connections from web (not only property file)
+* More filters for logs-view (date, rows updated, duration time)
+* **New view page with graphs and comparison of two or more states.**
