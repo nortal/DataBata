@@ -1,6 +1,8 @@
-app.config(function ($locationProvider, $modalProvider) {
+app.config(function ($locationProvider, $modalProvider, $tooltipProvider) {
   $locationProvider.html5Mode(true).hashPrefix('!');
   angular.extend($modalProvider.defaults, {template: '/templates/modal.tpl.html', html: true, show: false});
+  angular.extend($tooltipProvider.defaults, {html: true});
+  hljs.initHighlightingOnLoad();
 });
 
 app.controller('RootCtrl', function ($scope, $resource, $modal, $location, $anchorScroll) {
@@ -23,15 +25,15 @@ app.controller('RootCtrl', function ($scope, $resource, $modal, $location, $anch
       data.modules.push.apply(data.modules, _.uniq(modules));
     });
   }
-
+  
   function groupHistory(module) {
     var filtered = data.history;
     if (module) {
       filtered = _.where(filtered, {module_name: module});
     }
-    data.history_filtered_count = filtered.length;
-    data.history_filtered = _.groupBy(filtered, function(item) {
-      return moment(item.changeTime).format("YYYY.MM");
+    data.history_grouped_count = filtered.length;
+    data.history_grouped = _.groupBy(filtered, function(item) {
+      return moment(item.changeTime).format("YYYY MMMM");
     });
   }
 
@@ -60,15 +62,15 @@ app.controller('RootCtrl', function ($scope, $resource, $modal, $location, $anch
   var data = {
     info: {},
     history: [],
-    history_filtered: [],
-    history_filtered_count: 0,
+    history_grouped: [],
+    history_grouped_count: 0,
     objects: [],
     objects_order: 'objectName',
     objects_reverse: false,
     objects_filter: {},
     logs: [],
     logs_limits: [15,50,150,500],
-    logs_limit: 15,
+    logs_limit: 25,
     logs_order: 'updateTime',
     logs_reverse: true,
     logs_filter: {},
@@ -77,8 +79,34 @@ app.controller('RootCtrl', function ($scope, $resource, $modal, $location, $anch
   }
   $scope.data = data;
 
+  $scope.showMoreLogs = function() {
+    data.logs_limit = data.logs_limit + 25;
+  }
+
   $scope.formatDate = function(date) {
     return moment(date).format("YYYY.MM.DD HH:mm:ss");
+  }
+
+  function isRule(text) {
+    var value = text.toLowerCase();
+    return value.indexOf(" function ") > 0
+      || value.indexOf(" procedure ") > 0
+      || value.indexOf(" package ") > 0;
+  }
+
+  $scope.highlighted = function(item) {
+    return hljs.highlight(isRule(item.sqlText) ? 'ruleslanguage' : 'sql', item.sqlText).value;
+  }
+
+  $scope.getLogData = function(item) {
+    return {
+      checked: false,
+      title: $scope.formatDate(item.updateTime)
+        + (data.module === 'ALL' ? '<br/>' + item.moduleName : '')
+        + (item.executionTime > 0 ? '<br/>' + item.executionTime + ' sec' : '')
+        + (item.rowsUpdated > 0 ? '<br/>' + item.rowsUpdated + ' row(s)' : '')
+        + (item.dbChangeCode ? '<br/>change: ' + item.dbChangeCode : '')
+      }
   }
 
   $scope.formatHistoryTime = function(date) {
