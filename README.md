@@ -35,3 +35,16 @@ Spring Framework: simply create following bean in your spring configuration
 ```
 **NB!** You need to reference [jdbcTemplate](http://docs.spring.io/spring/docs/3.0.x/spring-framework-reference/html/jdbc.html) and [transactionManager](http://docs.spring.io/spring/docs/3.0.x/spring-framework-reference/html/transaction.html) beans in your configurations. And sql-files location is inside WEB-INF directory of your web application. 
 
+To run DataBata you need following dependencies in your classpath:
+- gradle dependencies
+``` 
+  runtime 'commons-lang:commons-lang:2.4'
+  runtime 'log4j:log4j:1.2.+'
+  runtime 'org.springframework:org.springframework.jdbc:3.1.3.RELEASE'
+
+  runtime 'com.oracle:ojdbc6:11.2.0.3'
+  runtime 'org.hsqldb:hsqldb:2.2.9'
+  runtime 'commons-logging:commons-logging:1.1.3'
+```
+- also include [sqltool.jar](databata-engine/lib/sqltool.jar) and [databata.jar](databata-engine/lib/databata.jar) from DataBata source.
+
