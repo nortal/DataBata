@@ -5,9 +5,9 @@ DataBata is a tool for incremental database update based on HSQLDB SqlTool creat
 
 For monitoring purposes there is DataBata Web Console.
 
-[![logs](web_console_screen1_th.png)](web_console_screen1.png)
-[![history](web_console_screen2_th.png)](web_console_screen2.png)
-[![objects](web_console_screen3_th.png)](web_console_screen3.png)
+[![logs](web_console_screen1_th.png)](https://raw.githubusercontent.com/nortal/DataBata/master/web_console_screen1.png)
+[![history](web_console_screen2_th.png)](https://raw.githubusercontent.com/nortal/DataBata/master/web_console_screen2.png)
+[![objects](web_console_screen3_th.png)](https://raw.githubusercontent.com/nortal/DataBata/master/web_console_screen3.png)
 
 What do you need to run DataBata?
 ========
@@ -35,6 +35,5 @@ Spring Framework: simply create following bean in your spring configuration
 		<property name="moduleName" value="DATABATA_TEST" />
 </bean>
 ```
-Note, you need reference to jdbcTemplate and transactionManager beans in your configuration.
-Location of files in web application as you can see is inside WEB-INF directory. 
+NB! You need to reference jdbcTemplate and transactionManager beans in your configurations. And sql-files location is inside WEB-INF directory of your web application. 
 
