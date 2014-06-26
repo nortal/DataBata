@@ -1,19 +1,25 @@
 DataBata
 ========
 
-DataBata is a tool for incremental database update based on HSQLDB SqlTool. Can be used by different types of people: DBA, developers and QA people.
+DataBata is a tool for incremental database update based on HSQLDB SqlTool created for all types of workers: DBA, developers and QA. Currently Oracle and Postgres databases are supported. We plan to support all general RDBMSes.
 
-Currently Oracle and Postgres databases are supported. It is in plan to implement support for others general RDBMSes.
+For monitoring purposes there is DataBata Web Console.
 
-Also it has great Web Console for monitoring the data.
-![alt tag](DataBataConsole.png)
+LOGS
+![alt tag](web_console_screen1.png)
 
-What do you need to run
+HISTORY
+![alt tag](web_console_screen1.png)
+
+OBJECTS
+![alt tag](web_console_screen1.png)
+
+What do you need to run DataBata?
 ========
 - Java 6+
 - Spring Framework
 - Database driver
-- HsqlDB sqltool
+- HsqlDB sqltool (see databata-engine/lib folder)
 
 Installation
 ========
