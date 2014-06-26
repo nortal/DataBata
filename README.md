@@ -35,5 +35,5 @@ Spring Framework: simply create following bean in your spring configuration
 		<property name="moduleName" value="DATABATA_TEST" />
 </bean>
 ```
-NB! You need to reference jdbcTemplate and transactionManager beans in your configurations. And sql-files location is inside WEB-INF directory of your web application. 
+**NB!** You need to reference [jdbcTemplate](http://docs.spring.io/spring/docs/3.0.x/spring-framework-reference/html/jdbc.html) and [transactionManager](http://docs.spring.io/spring/docs/3.0.x/spring-framework-reference/html/transaction.html) beans in your configurations. And sql-files location is inside WEB-INF directory of your web application. 
 
