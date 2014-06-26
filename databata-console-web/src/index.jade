@@ -32,7 +32,7 @@ html(lang="#{default_lang}",ng-app="#{ng_root_app}",ng-controller="#{ng_root_con
         form.navbar-form.navbar-right(role="search")
           .form-group.search_input
             i.fa.fa-times.click(ng-click="data.logs_filter.$ = ''")
-            input.form-control(type="text",placeholder="search text",ng-model="data.logs_filter.$",ng-model-options="{ debounce: 1000 }")
+            input.form-control(type="text",placeholder="search text",ng-model="data.logs_filter.$",ng-model-options="{ debounce: 200 }")
   .container
     .row
       .col-sm-5
@@ -75,6 +75,9 @@ html(lang="#{default_lang}",ng-app="#{ng_root_app}",ng-controller="#{ng_root_con
               i.fa.fa-info
             span.label.label-success.pull-right(ng-if="item.rowsUpdated > 1") {{item.rowsUpdated}} rows
             span.label.pull-right(ng-if="item.executionTime > 1",ng-class="{'label-warning': item.executionTime >= 1 && item.executionTime < 10, 'label-danger': item.executionTime >= 10}") {{item.executionTime}}sec
+            span.label.label-danger.pull-right.click(ng-if="item.errorCode > 0",ng-click="modal('ERROR: ' + item.errorCode, item.errorText)")
+              i.fa.fa-exclamation-circle
+              | &nbsp;{{item.errorCode}}
             span(ng-bind-html="highlighted(item)")
   .section_log(ng-show="data.tab === 'history'")
     .container

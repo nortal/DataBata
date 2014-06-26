@@ -5,7 +5,7 @@ app.config(function ($locationProvider, $modalProvider, $tooltipProvider) {
   hljs.initHighlightingOnLoad();
 });
 
-app.controller('RootCtrl', function ($scope, $resource, $modal, $location, $anchorScroll) {
+app.controller('RootCtrl', function ($scope, $resource, $modal, $location, $anchorScroll, $sce) {
   function reloadData() {
     data.info = api.info(function() {
       data.title = 'DataBata: ' + data.info.user + '@' + data.info.host;
@@ -124,10 +124,11 @@ app.controller('RootCtrl', function ($scope, $resource, $modal, $location, $anch
   }
 
   $scope.modal = function(title, content) {
+    console.log(title, content);
     var info = $modal({
       scope: $scope,
-      title: title,
-      content: content
+      title: $sce.trustAsHtml(title),
+      content: $sce.trustAsHtml(content)
     });
     info.$promise.then(function () {
       info.show();
