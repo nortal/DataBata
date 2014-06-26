@@ -14,7 +14,7 @@ What do you need to run DataBata?
 - Java 6+
 - Spring Framework
 - Database driver
-- HsqlDB sqltool (see (databata-engine/lib)[https://github.com/nortal/DataBata/tree/master/databata-engine/lib] folder)
+- HsqlDB sqltool (see [databata-engine/lib](https://github.com/nortal/DataBata/tree/master/databata-engine/lib) folder)
 
 Installation
 ========
