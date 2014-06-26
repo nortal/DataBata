@@ -4,7 +4,7 @@ apply plugin: 'maven'
 apply plugin: 'osgi'
 
 group = 'com.nortal'
-version = 'osgi'
+version = ''
 
 repositories {
   mavenCentral()
