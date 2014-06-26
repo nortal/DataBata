@@ -69,4 +69,5 @@ Roadmap
 * Possibility to have more than 1 connection.
 * Possibility to add connections from web (not only property file)
 * More filters for logs-view (date, rows updated, duration time)
+* Export of data from web console (needs analysis)
 * **New view page with graphs and comparison of two or more states.**
