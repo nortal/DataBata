@@ -57,12 +57,11 @@ Roadmap
 ========
 
 ## Engine
-* 1
-* 2
-* 3
-* 4
-* 5
-* 6
+* Write better documentation
+* Maven, Ant build tools support
+* Java hooks before and after execution
+* Simulation mode - running incremental update whithout upgrading database (will produce SQLs to output which will be run if execute DataBata without this flag
+* Test and implement support for others popuplar RDBMSes
 
 ## Web Console
 * Show message when active lock.
