@@ -128,6 +128,8 @@ public final class PropagationUtils {
       return "MSS";
     } else if (StringUtils.containsIgnoreCase(databaseName, "anywhere")) {
       return "SA";
+    } else if (StringUtils.containsIgnoreCase(databaseName, "postgresql")) {
+      return "PG";
     }
 
     return null;

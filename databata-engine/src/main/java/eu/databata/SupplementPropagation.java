@@ -10,7 +10,6 @@ import eu.databata.engine.model.PropagationObject.ObjectType;
 
 import eu.databata.engine.dao.PropagationDAO;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,7 +36,7 @@ import org.apache.log4j.Logger;
  */
 public class SupplementPropagation {
   private static final Logger LOG = Logger.getLogger(SupplementPropagation.class);
-  
+
   private File directory;
   private Map<String, PropagationObject> propagatedObjectsHashes = new HashMap<String, PropagationObject>(); // hash ->
   // propagation
@@ -69,22 +68,28 @@ public class SupplementPropagation {
   public void setSimulationMode(boolean simulationMode) {
     this.simulationMode = simulationMode;
   }
-  
+
   public void setVersionProvider(VersionProvider versionProvider) {
     this.versionProvider = versionProvider;
   }
-  
+
   public void setPropagatorFileHandler(PropagatorFileHandler propagatorFileLocator) {
     this.propagatorFileLocator = propagatorFileLocator;
   }
 
   public void propagate() {
+    if (!canPropagate()) {
+      LOG.info("Propagation of " + objectType.name()
+          + " objects is not activated. Define corresponding property: 'viewDir', 'packageDir', 'triggerDir'");
+
+      return;
+    }
     Set<String> localObjectsHashes = new HashSet<String>();
     Set<String> modifiedObjectsNames = new HashSet<String>();
     List<PropagationObject> propagationObjectsToUpdate = new ArrayList<PropagationObject>();
 
     long start = System.currentTimeMillis();
-    
+
     for (File file : propagatedFiles) {
       if (LOG.isDebugEnabled()) {
         LOG.info("Propagating file <" + file.getName() + ">, " + this.objectType.name());
@@ -127,9 +132,13 @@ public class SupplementPropagation {
    * databaseCode variable set ('ORA', 'MSS', ...). Returns union of described searches results.
    */
   public void collectPropagatedFiles() {
+    if (!canPropagate()) {
+      return;
+    }
     LOG.info("Supplement directory path: " + directory.getPath());
-    
-    this.propagatedFiles = propagatorFileLocator.findSupplementFiles(this.directory, fileSearchRegexp, sqlExecutor.getDatabaseCode());
+
+    this.propagatedFiles =
+        propagatorFileLocator.findSupplementFiles(this.directory, fileSearchRegexp, sqlExecutor.getDatabaseCode());
   }
 
   protected void propagateObjects(List<PropagationObject> propagationObjects) {
@@ -144,7 +153,7 @@ public class SupplementPropagation {
       }
       sqlExecutor.setCurrentDbChange(propagationObject.getPropagatedFile().getName());
       sqlExecutor.executeFile(null, propagationObject.getPropagatedFile());
-      if(!simulationMode) {
+      if (!simulationMode) {
         updateMD5Entry(propagationObject);
       }
     }
@@ -241,6 +250,10 @@ public class SupplementPropagation {
       } while (two_halfs++ < 1);
     }
     return buf.toString();
+  }
+
+  private boolean canPropagate() {
+    return directory != null;
   }
 
   public void addHash(String objectMd5Hash, PropagationObject propagationObject) {

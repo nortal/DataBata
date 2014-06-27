@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+<beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
 	xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
@@ -14,38 +14,38 @@
 	<context:annotation-config />
 	<context:component-scan base-package="eu.databata.web.rest"></context:component-scan>
 
-	<beans:bean id="placeholderConfig"
+	<bean id="placeholderConfig"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<beans:property name="location" value="classpath:databata.properties" />
-		<beans:property name="ignoreUnresolvablePlaceholders"
+		<property name="location" value="classpath:databata.properties" />
+		<property name="ignoreUnresolvablePlaceholders"
 			value="true" />
-	</beans:bean>
+	</bean>
 
-	<beans:bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-		<beans:property name="dataSource" ref="dataSource" />
-		<beans:property name="ignoreWarnings" value="false" />
-	</beans:bean>
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
+		<property name="ignoreWarnings" value="false" />
+	</bean>
 
-	<beans:bean id="dataSource"
+	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.SingleConnectionDataSource">
-		<beans:property name="driverClassName" value="${databata.driver}" />
-		<beans:property name="url" value="${databata.connection-url}" />
-		<beans:property name="username" value="${databata.user}" />
-		<beans:property name="password" value="${databata.password}" />
-		<beans:property name="suppressClose" value="true" />
-	</beans:bean>
+		<property name="driverClassName" value="${databata.driver}" />
+		<property name="url" value="${databata.connection-url}" />
+		<property name="username" value="${databata.user}" />
+		<property name="password" value="${databata.password}" />
+		<property name="suppressClose" value="true" />
+	</bean>
 
 	<tx:annotation-driven mode="proxy"
 		transaction-manager="transactionManager" />
 
-	<beans:bean id="transactionManager"
+	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<beans:property name="dataSource" ref="dataSource" />
-	</beans:bean>
+		<property name="dataSource" ref="dataSource" />
+	</bean>
 
-	<beans:bean id="propagationDao"
+	<bean id="propagationDao"
 		class="eu.databata.engine.dao.PropagationDAO">
-		<beans:property name="jdbcTemplate" ref="jdbcTemplate" />
-	</beans:bean>
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+	</bean>
 
-</beans:beans>
+</beans>
