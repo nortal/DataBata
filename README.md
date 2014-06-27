@@ -64,10 +64,11 @@ Roadmap
 * Test and implement support for others popuplar RDBMSes
 
 ## Web Console
-* Show message when active lock.
-* Show message when new data is avaliable.
-* Possibility to have more than 1 connection.
+* Show message when active lock
+* Show message when new data is avaliable
+* Fix error showing in logs list
+* Possibility to have more than 1 connection
 * Possibility to add connections from web (not only property file)
 * More filters for logs-view (date, rows updated, duration time)
 * Export of data from web console (needs analysis)
-* **New view page with graphs and comparison of two or more states.**
+* **New view page with graphs and comparison of two or more states**
