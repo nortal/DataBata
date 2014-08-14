@@ -1,0 +1,19 @@
+subprojects {
+    apply plugin: 'license'
+    
+    license {
+      header rootProject.file('LICENSE_HEADER')
+      strictCheck true
+    }
+}
+
+
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	
+	dependencies {
+		classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.7.0'
+	}
+}

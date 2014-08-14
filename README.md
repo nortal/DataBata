@@ -56,19 +56,5 @@ TODO instructions
 Roadmap
 ========
 
-## Engine
-* Write better documentation
-* Maven, Ant build tools support
-* Java hooks before and after execution
-* Simulation mode - running incremental update whithout upgrading database (will produce SQLs to output which will be run if execute DataBata without this flag
-* Test and implement support for others popuplar RDBMSes
-
-## Web Console
-* Show message when active lock
-* Show message when new data is avaliable
-* Fix error showing in logs list
-* Possibility to have more than 1 connection
-* Possibility to add connections from web (not only property file)
-* More filters for logs-view (date, rows updated, duration time)
-* Export of data from web console (needs analysis)
-* **New view page with graphs and comparison of two or more states**
+* [Core Engine](https://github.com/nortal/DataBata/issues?labels=core+engine&page=1&state=open)
+* [Web Monitor](https://github.com/nortal/DataBata/issues?labels=web+monitor&page=1&state=open)
