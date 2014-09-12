@@ -3,8 +3,42 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'osgi'
 
-group = 'com.nortal'
-version = ''
+group = "eu.databata"
+version = "1.0"
+
+buildscript {
+	repositories {
+		maven {
+			url 'https://artifact.nortal.com/repo'
+			credentials {
+				username = "${artifactory_user}"
+				password = "${artifactory_password}"
+			}
+		}
+		
+	}
+	dependencies {
+		classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.1')
+		classpath(group: 'com.beust', name: 'jcommander', version: '1.35')
+	}
+}
+
+allprojects {
+	apply plugin: 'artifactory'
+}
+
+artifactory {
+	contextUrl = "https://artifact.nortal.com"   //The base Artifactory URL if not overridden by the publisher/resolver
+	publish {
+		repository {
+			repoKey = 'nortal-libs-release-local'
+			username = "${artifactory_user}"
+			password = "${artifactory_password}"
+			maven = true
+		}
+	}
+
+}
 
 repositories {
   mavenCentral()
@@ -13,22 +47,6 @@ repositories {
   maven {url "http://repository.springsource.com/maven/bundles/external"}
 }
 
-configurations { deployerJars }
-    
-dependencies {
-  deployerJars 'org.apache.maven.wagon:wagon-ssh:2.2'
-}
-
-uploadArchives {
-    repositories {
-      mavenDeployer {
-        configuration = configurations.deployerJars
-        repository(url: "scp://maven2.webmedia.int/var/www/html/") {
-          authentication(userName: repoUser, password: repoPass)
-        }
-      }
-    }
-  }
 
 dependencies {
   compile files("lib/sqltool.jar")
