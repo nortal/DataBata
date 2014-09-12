@@ -12,6 +12,9 @@ before_install:
   - echo 'artifactory_user=$artifactory_user' >>  $GRADLE_PROPERTIES
   - echo 'artifactory_password=$artifactory_password' >>  $GRADLE_PROPERTIES
   
+after_success:
+  - gradle artifactoryPublish
+  
 notifications:
   email:
     on_success: change
