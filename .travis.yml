@@ -1,4 +1,6 @@
 language: java
 jdk:
   - oraclejdk7
-  - openjdk7
+  
+before_install:
+  - cp databata-engine/gradle.properties.sample databata-engine/gradle.properties
