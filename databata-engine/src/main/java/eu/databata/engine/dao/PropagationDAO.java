@@ -123,7 +123,7 @@ public class PropagationDAO extends JdbcDaoSupport {
 
   public List<PropagationHistory> getHistory() {
     try {
-      return getJdbcTemplate().query("SELECT * FROM " + changeHistoryTable, new PropagationHisotryRowMapper());
+      return getJdbcTemplate().query("SELECT * FROM " + changeHistoryTable, new PropagationHistoryRowMapper());
     } catch (final BadSqlGrammarException ex) {
       LOG.error(ex);
       return Collections.emptyList();
