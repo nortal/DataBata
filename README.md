@@ -1,5 +1,6 @@
 DataBata
 ========
+[![Build Status](https://travis-ci.org/nortal/DataBata.svg?branch=master)](https://travis-ci.org/nortal/DataBata)
 
 DataBata is a tool for incremental database update based on HSQLDB SqlTool created for all types of workers: DBA, developers and QA. Currently Oracle and Postgres databases are supported. We plan to support all general RDBMSes.
 
