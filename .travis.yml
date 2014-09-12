@@ -1,6 +1,5 @@
 language: java
 jdk:
-  - oraclejdk8
   - oraclejdk7
 
 env:
@@ -8,12 +7,11 @@ env:
     - GRADLE_PROPERTIES=databata-engine/gradle.properties
   
 before_install:
-  - echo 'conf.dir=oracle' >  $GRADLE_PROPERTIES
-  - echo 'artifactory_user=$artifactory_user' >>  $GRADLE_PROPERTIES
-  - echo 'artifactory_password=$artifactory_password' >>  $GRADLE_PROPERTIES
+  # Default parameters
+  - cp databata-engine/gradle.properties.sample databata-engine/gradle.properties
   
 after_success:
-  - gradle artifactoryPublish
+  - gradle artifactoryPublish -Partifactory_user=$artifactory_user -Partifactory_password=$artifactory_password
   
 notifications:
   email:
