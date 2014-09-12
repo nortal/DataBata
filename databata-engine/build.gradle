@@ -4,7 +4,8 @@ apply plugin: 'maven'
 apply plugin: 'osgi'
 
 group = "eu.databata"
-version = "1.0"
+
+version = getVersionName()
 
 buildscript {
 	repositories {
@@ -98,4 +99,6 @@ jar {
     instruction 'Export-Package', 'META-INF.databata, eu.databata.engine, *'
   }
 }
+
+
 
