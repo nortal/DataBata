@@ -1,10 +1,4 @@
-defaultTasks 'jar'
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'osgi'
-
 group = "eu.databata"
-
 version = getVersionName()
 
 buildscript {
@@ -16,17 +10,19 @@ buildscript {
 				password = "${artifactory_password}"
 			}
 		}
-		
 	}
 	dependencies {
-		classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.1')
-		classpath(group: 'com.beust', name: 'jcommander', version: '1.35')
+		classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.0.1')
 	}
 }
 
-allprojects {
-	apply plugin: 'artifactory'
-}
+
+defaultTasks 'jar'
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'osgi'
+
 
 artifactory {
 	contextUrl = "https://artifact.nortal.com"   //The base Artifactory URL if not overridden by the publisher/resolver
@@ -36,6 +32,9 @@ artifactory {
 			username = "${artifactory_user}"
 			password = "${artifactory_password}"
 			maven = true
+		}
+		defaults {
+			publications 'main'
 		}
 	}
 
@@ -100,5 +99,12 @@ jar {
   }
 }
 
-
+publishing {
+	publications {
+		main(MavenPublication) {
+			from components.java
+			artifact jar
+		}
+	}
+}
 
