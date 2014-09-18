@@ -1,0 +1,19 @@
+language: java
+jdk:
+  - oraclejdk7
+
+env:
+  global:
+    - GRADLE_PROPERTIES=databata-engine/gradle.properties
+  
+before_install:
+  # Default parameters
+  - cp databata-engine/gradle.properties.sample databata-engine/gradle.properties
+  
+after_success:
+  - gradle artifactoryPublish -Partifactory_user=$artifactory_user -Partifactory_password=$artifactory_password
+  
+notifications:
+  email:
+    on_success: change
+    on_failure: always

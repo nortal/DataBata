@@ -1,11 +1,46 @@
+group = "eu.databata"
+version = getVersionName()
+
+buildscript {
+	repositories {
+		maven {
+			url 'https://artifact.nortal.com/repo'
+			credentials {
+				username = "${artifactory_user}"
+				password = "${artifactory_password}"
+			}
+		}
+	}
+	dependencies {
+		classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.0.1')
+	}
+}
+
+
 defaultTasks 'jar'
 apply plugin: 'java'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'osgi'
 
 
 group = 'com.nortal'
 version = ''
+artifactory {
+	contextUrl = "https://artifact.nortal.com"   //The base Artifactory URL if not overridden by the publisher/resolver
+	publish {
+		repository {
+			repoKey = 'nortal-libs-release-local'
+			username = "${artifactory_user}"
+			password = "${artifactory_password}"
+			maven = true
+		}
+		defaults {
+			publications 'main'
+		}
+	}
+
+}
 
 repositories {
   mavenCentral()
@@ -14,6 +49,7 @@ repositories {
   maven {url "http://repository.springsource.com/maven/bundles/external"}
 }
 
+<<<<<<< HEAD
 
 buildscript {
     repositories {
@@ -26,6 +62,8 @@ buildscript {
 //    }
 }
 
+=======
+>>>>>>> 0bc935e217249516af96e3ac4e7f6ae9bf0cdc07
 
 dependencies {
   compile files("lib/sqltool.jar")
@@ -58,5 +96,14 @@ jar {
   manifest {
     instruction 'Export-Package', 'META-INF.databata, eu.databata.engine, *'
   }
+}
+
+publishing {
+	publications {
+		main(MavenPublication) {
+			from components.java
+			artifact jar
+		}
+	}
 }
 
