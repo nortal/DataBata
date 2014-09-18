@@ -39,10 +39,9 @@ databata-examples/.classpath
 databata-plugins/.classpath
 
 bin
-.settings/gradle/org.springsource.ide.eclipse.gradle.core.import.prefs
-databata-console/.settings/org.eclipse.jdt.core.prefs
-databata-examples/.settings/gradle/org.springsource.ide.eclipse.gradle.core.prefs
-databata-examples/.settings/gradle/org.springsource.ide.eclipse.gradle.refresh.prefs
+databata-console/.settings
+databata-examples/.settings
 databata-examples/databata.properties
-databata-plugins/.settings/gradle/org.springsource.ide.eclipse.gradle.core.prefs
-databata-plugins/.settings/gradle/org.springsource.ide.eclipse.gradle.refresh.prefs
+databata-plugins/.settings
+databata-engine/.settings
+.settings
