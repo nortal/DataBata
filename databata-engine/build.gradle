@@ -3,16 +3,16 @@ version = getVersionName()
 
 buildscript {
 	repositories {
-		maven {
-			url 'https://artifact.nortal.com/repo'
-			credentials {
-				username = "${artifactory_user}"
-				password = "${artifactory_password}"
-			}
-		}
+		//maven {
+		//	url 'https://artifact.nortal.com/repo'
+		//	credentials {
+		//		username = "${artifactory_user}"
+		//		password = "${artifactory_password}"
+		//	}
+		//}
 	}
 	dependencies {
-		classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.0.1')
+		//classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.0.1')
 	}
 }
 
@@ -20,27 +20,27 @@ buildscript {
 defaultTasks 'jar'
 apply plugin: 'java'
 apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.artifactory'
+//apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'osgi'
 
 
 group = 'com.nortal'
 version = ''
-artifactory {
-	contextUrl = "https://artifact.nortal.com"   //The base Artifactory URL if not overridden by the publisher/resolver
-	publish {
-		repository {
-			repoKey = 'nortal-libs-release-local'
-			username = "${artifactory_user}"
-			password = "${artifactory_password}"
-			maven = true
-		}
-		defaults {
-			publications 'main'
-		}
-	}
+//artifactory {
+//	contextUrl = "https://artifact.nortal.com"   //The base Artifactory URL if not overridden by the publisher/resolver
+//	publish {
+//		repository {
+//			repoKey = 'nortal-libs-release-local'
+//			username = "${artifactory_user}"
+//			password = "${artifactory_password}"
+//			maven = true
+//		}
+//		defaults {
+//			publications 'main'
+//		}
+//	}
 
-}
+//}
 
 repositories {
   mavenCentral()
@@ -48,22 +48,6 @@ repositories {
   maven {url "http://repository.springsource.com/maven/bundles/release"}
   maven {url "http://repository.springsource.com/maven/bundles/external"}
 }
-
-<<<<<<< HEAD
-
-buildscript {
-    repositories {
-        maven {
-            url uri('../repo')
-        }
-    }
-//    dependencies {
-//        classpath group: 'eu.databata.gradle', name: 'databata-plugins', version: '1.1-SNAPSHOT'
-//    }
-}
-
-=======
->>>>>>> 0bc935e217249516af96e3ac4e7f6ae9bf0cdc07
 
 dependencies {
   compile files("lib/sqltool.jar")
