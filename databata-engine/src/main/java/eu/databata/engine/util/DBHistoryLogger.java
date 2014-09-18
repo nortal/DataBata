@@ -16,6 +16,12 @@
 package eu.databata.engine.util;
 
 
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.sql.Connection;
+
+import org.hsqldb.cmdline.SqlFile;
+
 import eu.databata.engine.model.HistoryLogEntry;
 
 import eu.databata.engine.exeptions.SQLExceptionHandler;
@@ -114,6 +120,10 @@ public class DBHistoryLogger {
   public void setCurrentDbChange(String currentDbChange){
     this.currentDbChange = currentDbChange;
   }
+  
+  public JdbcTemplate getJdbcTemplate() {
+    return propagationDAO.getJdbcTemplate();
+  }
 
   private class WrapperSQLExceptionHandler implements SQLExceptionHandler {
     private SQLExceptionHandler handler;
@@ -122,8 +132,9 @@ public class DBHistoryLogger {
       this.handler = handler;
     }
 
-    public boolean isHandled(SQLException e, String sql) {
-      boolean ignored = handler.isHandled(e, sql);
+    public boolean isHandled(SQLException e, String sql, SqlFile sqlFile, Connection newConnection) {
+      boolean ignored = handler.isHandled(e, sql, sqlFile, newConnection);
+    
       String logMessage = (ignored ? "IGNORED:" : "FATAL:") + e.getMessage();
       log(sql, 0, e.getErrorCode(), logMessage, -0.01);
       return ignored;

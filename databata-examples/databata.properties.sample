@@ -1,0 +1,24 @@
+#db.propagation.driver=oracle.jdbc.OracleDriver
+db.propagation.driver=org.postgresql.Driver
+
+#db.propagation.connection-url=jdbc:oracle:thin:@DOMAIN:1521:SID
+db.propagation.connection-url=jdbc:postgresql://localhost:5432/DB
+db.propagation.user=USER
+db.propagation.password=PASS
+
+#db.location=file:///Users/max/prj/dbpropagation/test
+db.propagation.test.data.used=false
+db.propagation.disable=false
+db.propagation.automatic.transformation=true
+db.propagation.module.name=DATABATA_TEST
+db.propagation.revalidation={select recompile_invalid_objects(1)}
+db.propagation.environment=SELECT code FROM env
+
+#db.propagation.dba.connection-url=jdbc:oracle:thin:@DOMAIN:1521:SID
+db.propagation.dba.connection-url=jdbc:postgresql://localhost:5432/DB
+db.propagation.dba.user=USER
+db.propagation.dba.password=PASS
+
+db.propagation.sa.connection-url=jdbc:postgresql://localhost:5432/DB
+db.propagation.sa.user=USER
+db.propagation.sa.password=PASS

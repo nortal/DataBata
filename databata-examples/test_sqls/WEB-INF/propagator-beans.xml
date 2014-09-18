@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd 
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+  <import resource="propagator-db-beans.xml"/>
+
+	<bean id="propagator" class="eu.databata.engine.spring.PropagatorSpringInstance"
+		init-method="init">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<property name="transactionManager" ref="transactionManager" />
+
+		<property name="changes" value="WEB-INF/db/changes" />
+		<property name="packageDir" value="WEB-INF/db/packages" />
+		<property name="viewDir" value="WEB-INF/db/views" />
+		<property name="triggerDir" value="WEB-INF/db/triggers" />
+		<property name="useTestData" value="${db.propagation.test.data.used}" />
+		<property name="disableDbPropagation" value="${db.propagation.disable}" />
+		<property name="environmentSql" value="${db.propagation.environment}" />
+	    <property name="revalidationStatement" value="${db.propagation.revalidation}" />
+	    <property name="enableAutomaticTransformation" value="${db.propagation.automatic.transformation}" />
+		<property name="moduleName" value="${db.propagation.module.name}" />
+	</bean>
+  
+  <bean id="versionProvider" class="eu.databata.engine.version.StandardVersionProvider">
+    <property name="version" value="1.1.4.1" />
+  </bean>
+</beans>

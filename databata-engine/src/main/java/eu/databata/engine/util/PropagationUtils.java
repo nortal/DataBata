@@ -15,6 +15,10 @@
  */
 package eu.databata.engine.util;
 
+import java.sql.Connection;
+
+import org.hsqldb.cmdline.SqlFile;
+
 import eu.databata.engine.exeptions.SQLExceptionHandler;
 import java.io.BufferedReader;
 import java.io.File;
@@ -108,15 +112,16 @@ public final class PropagationUtils {
 
   // SQL exception handling
   public static void handleDataAccessException(DataAccessException e, String sql, SQLExceptionHandler handler) {
-    if (!(e.getCause() instanceof SQLException) || !handler.isHandled((SQLException) e.getCause(), sql)) {
+    if (!(e.getCause() instanceof SQLException) || !handler.isHandled((SQLException) e.getCause(), sql, null, null)) {
       throw e;
     }
   }
 
   // SQL exception handling
-  public static void handleDataAccessException(SQLException e, String sql, SQLExceptionHandler handler)
+  public static void handleDataAccessException(SQLException e, String sql, SQLExceptionHandler handler, SqlFile sqlFile, Connection newConnection)
       throws SQLException {
-    if (!handler.isHandled(e, sql)) {
+    if (!handler.isHandled(e, sql, sqlFile, newConnection)) {
+      LOG.info("\n\nERROR is not handled\n\n");
       throw e;
     }
   }

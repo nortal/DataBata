@@ -15,6 +15,8 @@
  */
 package eu.databata;
 
+import org.springframework.transaction.TransactionDefinition;
+
 import eu.databata.engine.dao.PropagationDAO;
 import eu.databata.engine.exeptions.SQLExceptionFactory;
 import eu.databata.engine.exeptions.SQLExceptionHandler;
@@ -92,11 +94,15 @@ public abstract class Propagator implements InitializingBean {
   private File packagesHeaderDirectory;
   private File viewsDirectory;
   private File triggersDirectory;
+  private File functionsDirectory;
+  private File proceduresDirectory;
   private File changesDir;
 
   private SupplementPropagation packageHeaders = null;
   private SupplementPropagation packages = null;
   private SupplementPropagation views = null;
+  private SupplementPropagation functions = null;
+  private SupplementPropagation procedures = null;
   private SupplementPropagation triggers = null;
 
   public Propagator() {
@@ -223,6 +229,8 @@ public abstract class Propagator implements InitializingBean {
           @Override
           protected void doInTransactionWithoutResult(TransactionStatus arg0) {
             packageHeaders.propagate();
+            functions.propagate();
+            procedures.propagate();
             views.propagate();
             packages.propagate();
             triggers.propagate();
@@ -230,6 +238,8 @@ public abstract class Propagator implements InitializingBean {
         });
       } else {
         packageHeaders.propagate();
+        functions.propagate();
+        procedures.propagate();
         views.propagate();
         packages.propagate();
         triggers.propagate();
@@ -246,6 +256,12 @@ public abstract class Propagator implements InitializingBean {
     }
     for (PropagationObject propagationObject : propagationObjects) {
       switch (propagationObject.getObjectType()) {
+      case FUNCTION:
+        functions.addHash(propagationObject.getMd5Hash(), propagationObject);
+        break;
+      case PROCEDURE:
+        procedures.addHash(propagationObject.getMd5Hash(), propagationObject);
+        break;
       case VIEW:
         views.addHash(propagationObject.getMd5Hash(), propagationObject);
         break;
@@ -294,7 +310,15 @@ public abstract class Propagator implements InitializingBean {
   public void setChanges(URL changesDir) throws IOException {
     this.changesDir = new File(changesDir.getPath());
   }
-
+  
+  public void setFunctionsDir(URL functionsDir) throws IOException {
+    this.functionsDirectory = new File(functionsDir.getPath());
+  }
+  
+  public void setProceduresDir(URL proceduresDir) throws IOException {
+    this.proceduresDirectory = new File(proceduresDir.getPath());
+  }
+  
   public void setPackageDir(URL packageDir) throws IOException {
     this.packagesDirectory = new File(packageDir.getPath());
   }
@@ -330,6 +354,7 @@ public abstract class Propagator implements InitializingBean {
   public void setTransactionManager(final PlatformTransactionManager transactionManager) {
     Validate.notNull(transactionManager);
     this.transactionTemplate = new TransactionTemplate(transactionManager);
+    this.transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
   }
 
   /**
@@ -431,6 +456,30 @@ public abstract class Propagator implements InitializingBean {
     packageHeaders.setSimulationMode(simulationMode);
     packageHeaders.setVersionProvider(versionProvider);
     packageHeaders.collectPropagatedFiles();
+    
+    functions =
+        new SupplementPropagation(functionsDirectory,
+                                  ObjectType.FUNCTION,
+                                  moduleName,
+                                  sqlExecutor,
+                                  propagationDAO,
+                                  getFunctionRegexp());
+    functions.setPropagatorFileHandler(getFileHandler());
+    functions.setSimulationMode(simulationMode);
+    functions.setVersionProvider(versionProvider);
+    functions.collectPropagatedFiles();
+    
+    procedures =
+        new SupplementPropagation(proceduresDirectory,
+                                  ObjectType.PROCEDURE,
+                                  moduleName,
+                                  sqlExecutor,
+                                  propagationDAO,
+                                  getProcedureRegexp());
+    procedures.setPropagatorFileHandler(getFileHandler());
+    procedures.setSimulationMode(simulationMode);
+    procedures.setVersionProvider(versionProvider);
+    procedures.collectPropagatedFiles();
 
     packages =
         new SupplementPropagation(packagesDirectory,
@@ -524,4 +573,8 @@ public abstract class Propagator implements InitializingBean {
   protected abstract String getViewRegexp();
 
   protected abstract String getTriggerRegexp();
+
+  protected abstract String getFunctionRegexp();
+  
+  protected abstract String getProcedureRegexp();
 }

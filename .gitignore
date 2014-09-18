@@ -25,9 +25,24 @@ databata-console/bin
 .project
 databata-console/.project
 databata-engine/.project
+databata-examples/.project
+databata-plugins/.project
 
 databata-console-web/node_modules
 databata-console-web/vendor_lib
 databata-console-web/personal.config.js
 databata-console-web/build
 databata-console-web/.idea
+databata-console/.classpath
+databata-engine/.classpath
+databata-examples/.classpath
+databata-plugins/.classpath
+
+bin
+.settings/gradle/org.springsource.ide.eclipse.gradle.core.import.prefs
+databata-console/.settings/org.eclipse.jdt.core.prefs
+databata-examples/.settings/gradle/org.springsource.ide.eclipse.gradle.core.prefs
+databata-examples/.settings/gradle/org.springsource.ide.eclipse.gradle.refresh.prefs
+databata-examples/databata.properties
+databata-plugins/.settings/gradle/org.springsource.ide.eclipse.gradle.core.prefs
+databata-plugins/.settings/gradle/org.springsource.ide.eclipse.gradle.refresh.prefs

@@ -1,0 +1,5 @@
+id|test
+11|INSERT first value
+13|Lisa kolmas väärtus (äöõüžšÄÖÕÜŠŽ)
+12|INSERT second value updated.
+-1|IF test: MUST go to non-Oracle database 1

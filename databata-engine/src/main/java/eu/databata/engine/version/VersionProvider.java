@@ -16,7 +16,7 @@
 package eu.databata.engine.version;
 
 /**
- * @author Maksim Boiko <mailto:max@webmedia.ee>
+ * @author Maksim Boiko <mailto:max.boiko@gmail.com>
  */
 public interface VersionProvider {
   String getVersion();

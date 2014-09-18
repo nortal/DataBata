@@ -15,6 +15,10 @@
  */
 package eu.databata.engine.exeptions;
 
+import java.sql.Connection;
+
+import org.hsqldb.cmdline.SqlFile;
+
 import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
@@ -24,7 +28,7 @@ import org.apache.log4j.Logger;
 public class MicrosoftSQLExceptionHandler implements SQLExceptionHandler {
   private static final Logger LOG = Logger.getLogger(MicrosoftSQLExceptionHandler.class);
 
-  public boolean isHandled(SQLException e, String sql) {
+  public boolean isHandled(SQLException e, String sql, SqlFile file, Connection newConnection) {
     String lowerCaseSql = sql.toLowerCase();
     switch (e.getErrorCode()) {
     case 3701:

@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 /**
- * @author Maksim Boiko <mailto:max@webmedia.ee>
+ * @author Maksim Boiko <mailto:max.boiko@gmail.com>
  */
 public class VersionUtil {
 

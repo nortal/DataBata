@@ -1,3 +1,4 @@
+/*
 --
 --   Copyright 2014 Nortal AS
 --
@@ -13,5 +14,5 @@
 --   See the License for the specific language governing permissions and
 --   limitations under the License.
 --
-
-CREATE TABLE <<TABLE_NAME>> (MODULE_NAME VARCHAR(30), CODE VARCHAR(255), CHANGE_TIME TIMESTAMP(6))
+*/
+create table <<TABLE_NAME>> (module_name varchar(30), code varchar(255), change_time timestamp(6))

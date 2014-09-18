@@ -1,0 +1,65 @@
+defaultTasks 'bata'
+apply plugin: 'java'
+
+group = 'com.nortal'
+version = ''
+
+repositories {
+  mavenCentral()
+  maven { url "https://code.lds.org/nexus/content/groups/main-repo" }
+  maven {url "http://repository.springsource.com/maven/bundles/release"}
+  maven {url "http://repository.springsource.com/maven/bundles/external"}
+}
+
+dependencies {
+  compile project(':databata-engine')
+  runtime files("../databata-engine/lib/sqltool.jar")
+  runtime 'commons-lang:commons-lang:2.4'
+  runtime 'log4j:log4j:1.2.+'
+  runtime 'org.springframework:org.springframework.jdbc:3.1.3.RELEASE'
+  
+  runtime 'com.oracle:ojdbc6:11.2.0.3'
+  runtime 'org.postgresql:com.springsource.org.postgresql.jdbc4:8.3.604'
+  runtime 'org.hsqldb:hsqldb:2.2.9'
+  runtime 'commons-logging:commons-logging:1.1.3'
+}
+
+task bata(type: JavaExec) {
+    main = "eu.databata.engine.spring.PropagatorSpringExecutor"
+    if(project.hasProperty('confFile')) {
+		args confFile
+	}
+    classpath = sourceSets.main.runtimeClasspath
+    if(project.hasProperty('sqlsDir')) {
+		classpath.add(files(sqlsDir))
+	}
+    classpath.add(files('.')) // need to have databata.properties in classpath
+} 
+
+task bataNewUser(type: JavaExec) {
+    main = "eu.databata.engine.util.PropagatorRecreateUserTool"
+    args '-u'
+    classpath = sourceSets.main.runtimeClasspath
+    classpath.add(files('.')) // need to have databata.properties in classpath
+} 
+
+task bataNewDb(type: JavaExec) {
+    main = "eu.databata.engine.util.PropagatorRecreateUserTool"
+    args '-db'
+    classpath = sourceSets.main.runtimeClasspath
+    classpath.add(files('.')) // need to have databata.properties in classpath
+}
+
+task bataInitDb(type: JavaExec) {
+    main = "eu.databata.engine.util.PropagatorRecreateUserTool"
+    args '-idb'
+    classpath = sourceSets.main.runtimeClasspath
+    classpath.add(files('.')) // need to have databata.properties in classpath
+}
+
+task bataExp(type: JavaExec) {
+	standardInput = System.in
+    main = "eu.databata.engine.util.PropagatorTableExport"
+    classpath = sourceSets.main.runtimeClasspath
+}
+

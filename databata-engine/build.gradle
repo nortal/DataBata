@@ -3,6 +3,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'osgi'
 
+
 group = 'com.nortal'
 version = ''
 
@@ -13,22 +14,18 @@ repositories {
   maven {url "http://repository.springsource.com/maven/bundles/external"}
 }
 
-configurations { deployerJars }
-    
-dependencies {
-  deployerJars 'org.apache.maven.wagon:wagon-ssh:2.2'
+
+buildscript {
+    repositories {
+        maven {
+            url uri('../repo')
+        }
+    }
+//    dependencies {
+//        classpath group: 'eu.databata.gradle', name: 'databata-plugins', version: '1.1-SNAPSHOT'
+//    }
 }
 
-uploadArchives {
-    repositories {
-      mavenDeployer {
-        configuration = configurations.deployerJars
-        repository(url: "scp://maven2.webmedia.int/var/www/html/") {
-          authentication(userName: repoUser, password: repoPass)
-        }
-      }
-    }
-  }
 
 dependencies {
   compile files("lib/sqltool.jar")
@@ -49,24 +46,6 @@ jar.doFirst {
     from it
   }
 }
-
-task bata(type: JavaExec) {
-    main = "eu.databata.engine.spring.PropagatorSpringExecutor"
-    classpath = sourceSets.main.runtimeClasspath
-    classpath.add(files('test_pg_sqls'))
-    classpath.add(files('log4j-1.2.15.jar'))
-} 
-
-task bataSchema(type: JavaExec) {
-    main = "eu.databata.engine.util.PropagatorRecreateUserTool"
-    classpath = sourceSets.main.runtimeClasspath
-} 
-
-task bataExp(type: JavaExec) {
-standardInput = System.in
-    main = "eu.databata.engine.util.PropagatorTableExport"
-    classpath = sourceSets.main.runtimeClasspath
-} 
 
 jar {
   include('**/*.java')

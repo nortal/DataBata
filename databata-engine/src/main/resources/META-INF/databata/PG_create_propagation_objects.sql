@@ -1,3 +1,4 @@
+/*
 --
 --   Copyright 2014 Nortal AS
 --
@@ -13,5 +14,5 @@
 --   See the License for the specific language governing permissions and
 --   limitations under the License.
 --
-
-CREATE TABLE <<TABLE_NAME>> (MODULE_NAME VARCHAR(30), OBJECT_NAME VARCHAR(30), OBJECT_TYPE VARCHAR(30), MD5_HASH VARCHAR(50), VERSION VARCHAR(30))
+*/
+create table <<TABLE_NAME>> (module_name varchar(30), object_name varchar(30), object_type varchar(30), md5_hash varchar(50), version varchar(30))

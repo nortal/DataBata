@@ -1,5 +1,0 @@
-ID|TEST
-11|INSERT first value
-12|INSERT second value updated.
-13|Lisa kolmas väärtus (äöõüžšÄÖÕÜŠŽ)
--1|IF test: MUST go to Oracle database 1

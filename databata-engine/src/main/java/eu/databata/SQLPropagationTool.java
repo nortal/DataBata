@@ -1,17 +1,10 @@
 /**
- *   Copyright 2014 Nortal AS
- *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ * Copyright 2014 Nortal AS Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package eu.databata;
 
@@ -37,7 +30,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 /**
  * Wrapper for SqlTool class, which handles some common exceptions.
  * 
- * @author Maksim Boiko <mailto:max@webmedia.ee>
+ * @author Maksim Boiko <mailto:max.boiko@gmail.com>
  */
 public class SQLPropagationTool {
   private static final Logger LOG = Logger.getLogger(SQLPropagationTool.class);
@@ -61,7 +54,9 @@ public class SQLPropagationTool {
       if (!simulationMode) {
         connection = jdbcTemplate.getDataSource().getConnection();
       }
-      SqlFile sqlFile = new SqlFile(propagatedFile, new StandardSqlExecutionCallback(historyLogger), transformer);
+      StandardSqlExecutionCallback executionCallback = new StandardSqlExecutionCallback(historyLogger);
+      SqlFile sqlFile = new SqlFile(propagatedFile, executionCallback, transformer);
+      executionCallback.setSqlFile(sqlFile);
       sqlFile.setSimulationMode(simulationMode);
       sqlFile.setConnection(connection);
       sqlFile.addUserVars(varMap);

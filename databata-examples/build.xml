@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Databata demos" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+	<path id="maven-ant-tasks.classpath" path="etc/lib/maven-ant-tasks-2.1.3.jar" />
+	<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="antlib:org.apache.maven.artifact.ant" classpathref="maven-ant-tasks.classpath" />
+
+	<artifact:remoteRepository id="nexus.repo" url="https://code.lds.org/nexus/content/groups/main-repo" />
+	<artifact:remoteRepository id="maven.release.repo" url="http://repository.springsource.com/maven/bundles/release" />
+	<artifact:remoteRepository id="maven.external.repo" url="http://repository.springsource.com/maven/bundles/external" />
+
+	<artifact:dependencies filesetId="dependency.fileset" pathId="dependency.classpath">
+		<dependency groupId="commons-lang" artifactId="commons-lang" version="2.4" scope="runtime" />
+		<dependency groupId="log4j" artifactId="log4j" version="1.2.17" scope="runtime" />
+		<dependency groupId="org.springframework" artifactId="org.springframework.jdbc" version="3.1.3.RELEASE" scope="runtime" />
+		<dependency groupId="com.oracle" artifactId="ojdbc6" version="11.2.0.3" scope="runtime" />
+		<dependency groupId="org.postgresql" artifactId="com.springsource.org.postgresql.jdbc4" version="8.3.604" scope="runtime" />
+		<dependency groupId="commons-logging" artifactId="commons-logging" version="1.1.3" scope="runtime" />
+		<dependency groupId="org.hsqldb" artifactId="hsqldb" version="2.2.9" scope="runtime" />
+
+		<remoteRepository refid="nexus.repo" />
+		<remoteRepository refid="maven.release.repo" />
+		<remoteRepository refid="maven.external.repo" />
+	</artifact:dependencies>
+
+	<path id="databata.classpath">
+		<fileset refid="dependency.fileset" />
+		<fileset dir="../databata-engine/build/libs" includes="databata-engine.jar" />
+		<fileset dir="../databata-engine/lib" includes="sqltool.jar" />
+		<pathelement location="." />
+	</path>
+
+	<target name="bata" description="Executes SQL propagation">
+		<java fork="true" classname="eu.databata.engine.spring.PropagatorSpringExecutor" classpathref="databata.classpath" failonerror="true">
+			<arg value="${confFile}" />
+			<classpath>
+				<pathelement location="${sqlsDir}" />
+			</classpath>
+		</java>
+	</target>
+
+	<target name="bataNewUser" description="Creates new Db user">
+		<java fork="true" classname="eu.databata.engine.util.PropagatorRecreateUserTool" classpathref="databata.classpath">
+			<arg value="-u" />
+		</java>
+	</target>
+
+	<target name="bataNewDb" description="Creates new Db instance">
+		<java fork="true" classname="eu.databata.engine.util.PropagatorRecreateUserTool" classpathref="databata.classpath">
+			<arg value="-db" />
+		</java>
+	</target>
+	
+	<target name="bataInitDb" description="Initialized Db with specific utilities/extentions">
+		<java fork="true" classname="eu.databata.engine.util.PropagatorRecreateUserTool" classpathref="databata.classpath">
+			<arg value="-idb" />
+		</java>
+	</target>
+</project>

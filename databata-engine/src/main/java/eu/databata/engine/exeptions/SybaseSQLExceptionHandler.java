@@ -15,16 +15,20 @@
  */
 package eu.databata.engine.exeptions;
 
+import java.sql.Connection;
+
+import org.hsqldb.cmdline.SqlFile;
+
 import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 /**
- * @author Maksim Boiko <mailto:max@webmedia.ee>
+ * @author Maksim Boiko <mailto:max.boiko@gmail.com>
  */
 public class SybaseSQLExceptionHandler implements SQLExceptionHandler {
   private static final Logger LOG = Logger.getLogger(SybaseSQLExceptionHandler.class);
 
-  public boolean isHandled(SQLException e, String sql) {
+  public boolean isHandled(SQLException e, String sql, SqlFile sqlFile, Connection newConnection) {
     switch (e.getErrorCode()) {
     case -141:
       LOG.warn("Table not found. Ignoring error.");

@@ -1,11 +1,11 @@
-subprojects {
-    apply plugin: 'license'
+//subprojects {
+//    apply plugin: 'license'
     
-    license {
-      header rootProject.file('LICENSE_HEADER')
-      strictCheck true
-    }
-}
+//    license {
+ //     header rootProject.file('LICENSE_HEADER')
+ //     strictCheck true
+  //  }
+//}
 
 
 buildscript {

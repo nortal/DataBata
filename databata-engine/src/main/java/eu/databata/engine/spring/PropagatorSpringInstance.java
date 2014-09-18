@@ -39,6 +39,16 @@ public class PropagatorSpringInstance extends Propagator {
   protected String getPackageRegexp() {
     return ".*(?<!(_header))\\.sql";
   }
+  
+  @Override
+  protected String getFunctionRegexp() {
+    return ".*\\.sql";
+  }
+  
+  @Override
+  protected String getProcedureRegexp() {
+    return ".*\\.sql";
+  }
 
   @Override
   protected String getViewRegexp() {

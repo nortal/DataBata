@@ -1,17 +1,10 @@
 /**
- *   Copyright 2014 Nortal AS
- *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ * Copyright 2014 Nortal AS Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package eu.databata.engine.dao;
 
@@ -43,7 +36,7 @@ import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 /**
- * @author Maksim Boiko <mailto:max@webmedia.ee>
+ * @author Maksim Boiko <mailto:max.boiko@gmail.com>
  */
 public class PropagationDAO extends JdbcDaoSupport {
   private static final Logger LOG = Logger.getLogger(PropagationDAO.class);
@@ -51,10 +44,10 @@ public class PropagationDAO extends JdbcDaoSupport {
   private final static int MAX_SQLTEXT_LENGTH = 2000;
   private final static int MAX_ERRORTEXT_LENGTH = 1000;
 
-  private String changeHistoryTable = "SYS_DB_PROPAGATOR_HISTORY";
-  private String propagationObjectsTable = "SYS_DB_PROPAGATOR_OBJECT";
-  private String lockTable = "SYS_DB_PROPAGATOR_LOCK";
-  private String historyLogTable = "SYS_DB_PROPAGATOR_SQL_LOG";
+  private String changeHistoryTable = "sys_db_propagator_history";
+  private String propagationObjectsTable = "sys_db_propagator_object";
+  private String lockTable = "sys_db_propagator_lock";
+  private String historyLogTable = "sys_db_propagator_sql_log";
   private String databaseCode = "ORA";
 
   private String createHistorySQL;
@@ -197,7 +190,7 @@ public class PropagationDAO extends JdbcDaoSupport {
         PropagationLock lock = new PropagationLock();
         lock.setToken(rs.getString("token"));
         lock.setLockTime(rs.getDate("lock_time"));
-        
+
         return lock;
       }
     });
@@ -227,8 +220,8 @@ public class PropagationDAO extends JdbcDaoSupport {
                                  + historyLogTable
                                  + "(MODULE_NAME, DB_CHANGE_CODE, SQL_TEXT, ROWS_UPDATED, ERROR_CODE, ERROR_TEXT, UPDATE_TIME, EXECUTION_TIME) VALUES(?,?,?,?,?,?,?,?) ",
                              new Object[] { moduleName, entry.getDbChange() == null ? "" : entry.getDbChange(),
-                                           sqlText == null ? "" : sqlText, entry.getSqlRows(), entry.getSqlErrorCode(),
-                                           errorText == null ? "" : errorText, entry.getDate(),
+                                           sqlText, entry.getSqlRows(), entry.getSqlErrorCode(),
+                                           errorText, entry.getDate(),
                                            entry.getExecutionTime() });
   }
 
@@ -287,12 +280,13 @@ public class PropagationDAO extends JdbcDaoSupport {
 
   private String readSqlFromFile(String filePath) {
     // Enumeration<URL> findEntries = bundleContext.getBundle().findEntries(".", filePath, false);
-
-    ClassPathResource classPathResource = new ClassPathResource("META-INF/databata/" + filePath);
+    String fileLocation = "META-INF/databata/" + filePath;
+    LOG.info("Reading file from " + fileLocation);
+    ClassPathResource classPathResource = new ClassPathResource(fileLocation);
     try {
       return PropagationUtils.readFile(classPathResource.getInputStream());
     } catch (IOException e) {
-      LOG.error("Cannot read " + filePath + " file from classpath.");
+      LOG.error("Cannot read " + fileLocation + " file from classpath.");
       throw new RuntimeException(e);
     }
   }

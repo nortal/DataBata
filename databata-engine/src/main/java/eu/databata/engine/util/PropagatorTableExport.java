@@ -28,7 +28,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
- * @author Maksim Boiko (max@webmedia.ee)
+ * @author Maksim Boiko (max.boiko@gmail.com)
  */
 public class PropagatorTableExport {
 

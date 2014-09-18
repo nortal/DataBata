@@ -1,17 +1,10 @@
 /**
- *   Copyright 2014 Nortal AS
- *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ * Copyright 2014 Nortal AS Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package eu.databata.engine.util;
 
@@ -29,12 +22,21 @@ import org.hsqldb.cmdline.SqlToolError;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 /**
- * @author Maksim Boiko <mailto:max@webmedia.ee>
+ * @author Maksim Boiko <mailto:max.boiko@gmail.com>
  */
 public class PropagatorRecreateUserTool {
   private static final Logger LOG = Logger.getLogger(PropagatorRecreateUserTool.class);
 
   public static void main(String[] args) {
+    if (args.length == 0) {
+      printMessage();
+      return;
+    }
+    String scriptName = getScriptName(args[0]);
+    if (scriptName == null) {
+      printMessage();
+      return;
+    }
     ClassLoader classLoader = PropagatorRecreateUserTool.class.getClassLoader();
     InputStream resourceAsStream = classLoader.getResourceAsStream("databata.properties");
     Properties propagatorProperties = new Properties();
@@ -48,9 +50,15 @@ public class PropagatorRecreateUserTool {
 
     SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
     dataSource.setDriverClassName(propagatorProperties.getProperty("db.propagation.driver"));
-    dataSource.setUrl(propagatorProperties.getProperty("db.propagation.dba.connection-url"));
-    dataSource.setUsername(propagatorProperties.getProperty("db.propagation.dba.user"));
-    dataSource.setPassword(propagatorProperties.getProperty("db.propagation.dba.password"));
+    if ("-idb".equals(args[0])) {
+      dataSource.setUrl(propagatorProperties.getProperty("db.propagation.dba.connection-url"));
+      dataSource.setUsername(propagatorProperties.getProperty("db.propagation.dba.user"));
+      dataSource.setPassword(propagatorProperties.getProperty("db.propagation.dba.password"));
+    } else {
+      dataSource.setUrl(propagatorProperties.getProperty("db.propagation.sa.connection-url"));
+      dataSource.setUsername(propagatorProperties.getProperty("db.propagation.sa.user"));
+      dataSource.setPassword(propagatorProperties.getProperty("db.propagation.sa.password"));
+    }
     dataSource.setSuppressClose(true);
 
     String databaseName = "undefined";
@@ -58,11 +66,12 @@ public class PropagatorRecreateUserTool {
       databaseName = dataSource.getConnection().getMetaData().getDatabaseProductName();
     } catch (SQLException e) {
       LOG.error("Cannot get connection by specified url", e);
+      return;
     }
     String databaseCode = PropagationUtils.getDatabaseCode(databaseName);
-    LOG.info("Database with code '" + databaseCode + "' is identified.");
+    LOG.info("Database with code '" + databaseCode + "' is identified. for database '" + databaseName + "'");
 
-    String submitFileName =  "META-INF/databata/" + databaseCode + "_recreate_user.sql";
+    String submitFileName = "META-INF/databata/" + databaseCode + "_" + scriptName + ".sql";
     String fileContent = "";
     try {
       fileContent = getFileContent(classLoader, submitFileName);
@@ -71,7 +80,7 @@ public class PropagatorRecreateUserTool {
           + "' cannot be read from classpath. Trying to load default submit file.");
     }
     if (fileContent == null || "".equals(fileContent)) {
-      String defaultSubmitFileName = "META-INF/databata/" + databaseCode + "_recreate_user.default.sql";
+      String defaultSubmitFileName = "META-INF/databata/" + databaseCode + "_" + scriptName + ".default.sql";
       try {
         fileContent = getFileContent(classLoader, defaultSubmitFileName);
       } catch (IOException e) {
@@ -117,6 +126,22 @@ public class PropagatorRecreateUserTool {
     } catch (SQLException e) {
       LOG.error("Error when creating user", e);
     }
+  }
+
+  private static void printMessage() {
+    System.out.println("\nPlease provide one of the following arguments:\n-u   -- creates user\n-db  -- creates database\n-idb -- initializes database");
+  }
+
+  private static String getScriptName(String userArgument) {
+    if ("-u".equals(userArgument)) {
+      return "recreate_user";
+    } else if ("-db".equals(userArgument)) {
+      return "recreate_database";
+    } else if ("-idb".equals(userArgument)) {
+      return "init_database";
+    }
+
+    return null;
   }
 
   private static String getFileContent(ClassLoader contextClassLoader, String fileName) throws IOException {

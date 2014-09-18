@@ -26,7 +26,7 @@ import org.springframework.jdbc.BadSqlGrammarException;
  * Contains logic for locking and unlocking propagator execution. Lock table have to be provided to constructor
  * for this purpose.
  * 
- * @author Maksim Boiko <mailto:max@webmedia.ee>
+ * @author Maksim Boiko <mailto:max.boiko@gmail.com>
  *
  */
 public class PropagatorLock {

@@ -1,3 +1,4 @@
+/*
 --
 --   Copyright 2014 Nortal AS
 --
@@ -13,5 +14,5 @@
 --   See the License for the specific language governing permissions and
 --   limitations under the License.
 --
-
-CREATE TABLE <<TABLE_NAME>> (MODULE_NAME VARCHAR(30), DB_CHANGE_CODE VARCHAR(200), SQL_TEXT VARCHAR(2000), ROWS_UPDATED NUMERIC(18), ERROR_CODE NUMERIC(18), ERROR_TEXT VARCHAR(1000), UPDATE_TIME TIMESTAMP(6), EXECUTION_TIME NUMERIC(10,2))
+*/
+create table <<TABLE_NAME>> (module_name varchar(30), db_change_code varchar(200), sql_text varchar(2000), rows_updated bigint, error_code bigint, error_state varchar(10), error_text varchar(1000), update_time timestamp(6), execution_time numeric(10,2))

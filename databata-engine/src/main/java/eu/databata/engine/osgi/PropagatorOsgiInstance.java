@@ -52,4 +52,14 @@ public class PropagatorOsgiInstance extends Propagator {
   protected String getTriggerRegexp() {
     return "*.sql";
   }
+
+  @Override
+  protected String getFunctionRegexp() {
+    return "*.sql";
+  }
+
+  @Override
+  protected String getProcedureRegexp() {
+    return "*.sql";
+  }
 }

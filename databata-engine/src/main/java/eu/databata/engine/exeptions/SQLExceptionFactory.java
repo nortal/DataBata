@@ -18,7 +18,7 @@ package eu.databata.engine.exeptions;
 /**
  * Factory for initializing exeprion handlers using database code got from driver.
  * 
- * @author Maksim Boiko <mailto:max@webmedia.ee>
+ * @author Maksim Boiko <mailto:max.boiko@gmail.com>
  * @author Igor Bossenko <mailto:igor@webmedia.ee>
  */
 public class SQLExceptionFactory {
@@ -32,6 +32,8 @@ public class SQLExceptionFactory {
       return new SybaseSQLExceptionHandler();
     } else if ("MSS".equals(databaseCode)) {
       return new MicrosoftSQLExceptionHandler();
+    } else if ("PG".equals(databaseCode)) {
+      return new PostgreSQLExceptionHandler();
     }
 
     return null;
