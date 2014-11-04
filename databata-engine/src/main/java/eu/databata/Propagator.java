@@ -1,19 +1,14 @@
 /**
- *   Copyright 2014 Nortal AS
- *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ * Copyright 2014 Nortal AS Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package eu.databata;
+
+import java.util.Date;
 
 import org.springframework.transaction.TransactionDefinition;
 
@@ -79,6 +74,7 @@ public abstract class Propagator implements InitializingBean {
   private String propagationObjectsTable;
   private String historyLogTable;
   private PropagationDAO propagationDAO;
+  private boolean finished;
 
   private String revalidationStatement;
   private String environmentSql;
@@ -86,6 +82,7 @@ public abstract class Propagator implements InitializingBean {
   private String databaseName;
   private String environmentCode;
   private String moduleName;
+  protected List<String> dependsOn = new ArrayList<String>(0);
 
   private SQLPropagationTool sqlExecutor;
   private VersionProvider versionProvider;
@@ -109,21 +106,44 @@ public abstract class Propagator implements InitializingBean {
   }
 
   public void init() {
+    LOG.info(this.moduleName + " starting propagation. " + new Date());
+
     if (disableDbPropagation) {
       LOG.info("Changes propagation is disabled.");
       return;
     }
-    if (!simulationMode && !propagatorLock.lock()) {
-      return;
+    // if (!simulationMode && !propagatorLock.lock()) {
+    // return;
+    // }
+    while (!checkPreconditions()) {
+      try {
+        Thread.sleep(5000);
+      } catch (InterruptedException e) {
+        throw new RuntimeException();
+      }
     }
     try {
       collectStructureAndPropagate();
     } finally {
       if (!simulationMode) {
         propagatorLock.unlock();
+        finished = true;
       }
     }
+    LOG.info(this.moduleName + " finishing propagation." + new Date());
   }
+
+  protected boolean checkPreconditions() {
+    for (PropagatorExecutionPrecondition precondition : getPreconditions()) {
+      if (!precondition.canExecute()) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  protected abstract List<PropagatorExecutionPrecondition> getPreconditions();
 
   private void collectStructureAndPropagate() {
     try {
@@ -310,15 +330,15 @@ public abstract class Propagator implements InitializingBean {
   public void setChanges(URL changesDir) throws IOException {
     this.changesDir = new File(changesDir.getPath());
   }
-  
+
   public void setFunctionsDir(URL functionsDir) throws IOException {
     this.functionsDirectory = new File(functionsDir.getPath());
   }
-  
+
   public void setProceduresDir(URL proceduresDir) throws IOException {
     this.proceduresDirectory = new File(proceduresDir.getPath());
   }
-  
+
   public void setPackageDir(URL packageDir) throws IOException {
     this.packagesDirectory = new File(packageDir.getPath());
   }
@@ -396,6 +416,18 @@ public abstract class Propagator implements InitializingBean {
     this.versionProvider = versionProvider;
   }
 
+  public void setDependsOn(String dependsOn) {
+    this.dependsOn = Arrays.asList(StringUtils.split(dependsOn, ','));
+  }
+
+  public String getModuleName() {
+    return moduleName;
+  }
+  
+  public boolean isFinished() {
+    return finished;
+  }
+
   @Override
   public void afterPropertiesSet() throws Exception {
     if (!simulationMode) {
@@ -456,7 +488,7 @@ public abstract class Propagator implements InitializingBean {
     packageHeaders.setSimulationMode(simulationMode);
     packageHeaders.setVersionProvider(versionProvider);
     packageHeaders.collectPropagatedFiles();
-    
+
     functions =
         new SupplementPropagation(functionsDirectory,
                                   ObjectType.FUNCTION,
@@ -468,7 +500,7 @@ public abstract class Propagator implements InitializingBean {
     functions.setSimulationMode(simulationMode);
     functions.setVersionProvider(versionProvider);
     functions.collectPropagatedFiles();
-    
+
     procedures =
         new SupplementPropagation(proceduresDirectory,
                                   ObjectType.PROCEDURE,
@@ -575,6 +607,6 @@ public abstract class Propagator implements InitializingBean {
   protected abstract String getTriggerRegexp();
 
   protected abstract String getFunctionRegexp();
-  
+
   protected abstract String getProcedureRegexp();
 }
