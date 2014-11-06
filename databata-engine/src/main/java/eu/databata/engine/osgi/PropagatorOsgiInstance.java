@@ -30,7 +30,7 @@ public class PropagatorOsgiInstance extends Propagator implements BundleContextA
 
   @Override
   protected boolean canPropagateHeadersSeparately() {
-    return false;
+    return true;
   }
 
   @Override

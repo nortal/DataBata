@@ -8,18 +8,9 @@
  */
 package eu.databata.engine.osgi;
 
-import eu.databata.engine.util.PropagationUtils;
-
 import eu.databata.PropagatorFileHandler;
 import eu.databata.SupplementPropagation;
-
-import java.util.TreeMap;
-
-import java.util.HashMap;
-import java.util.Iterator;
-
-import java.util.Map;
-
+import eu.databata.engine.util.PropagationUtils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -27,9 +18,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import org.apache.log4j.Logger;
 import org.osgi.framework.Bundle;
 
@@ -43,14 +40,16 @@ public class PropagatorOsgiFileHandler implements PropagatorFileHandler {
     Enumeration<URL> findEntries = bundle.findEntries(searchPath, fileSearchRegexp, true);
     URL[] files = convertURLEnumerationToArray(findEntries);
 
-    File[] fileToPropagate = new File[files.length];
-    int fileIndex = 0;
+    List<File> fileToPropagate = new ArrayList<File>();
     for (URL resource : files) {
+      if (resource.getFile().replace(searchPath + "/", "").replace(dbCode + "/", "").contains("/")) {
+        continue;
+      }
       LOG.info("Supplement file: " + resource.getFile());
-      fileToPropagate[fileIndex++] = makeFile(resource);
+      fileToPropagate.add(makeFile(resource));
     }
 
-    return null;
+    return fileToPropagate.toArray(new File[] {});
   }
 
   @Override

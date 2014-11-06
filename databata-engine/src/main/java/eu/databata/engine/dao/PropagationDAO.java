@@ -291,7 +291,9 @@ public class PropagationDAO extends JdbcDaoSupport {
     LOG.info("Reading file from " + fileLocation);
     ClassPathResource classPathResource = new ClassPathResource(fileLocation);
     try {
-      return PropagationUtils.readFile(classPathResource.getInputStream());
+      String sqlFile = PropagationUtils.readFile(classPathResource.getInputStream());
+      sqlFile = sqlFile.replaceAll("--.*$\n", "");
+      return sqlFile;
     } catch (IOException e) {
       LOG.error("Cannot read " + fileLocation + " file from classpath.");
       throw new RuntimeException(e);

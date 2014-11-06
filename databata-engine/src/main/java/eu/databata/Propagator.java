@@ -343,10 +343,6 @@ public abstract class Propagator implements InitializingBean {
     this.packagesDirectory = new File(packageDir.getPath());
   }
 
-  public void setHeadersDir(String resource) throws IOException {
-    //
-  }
-
   public void setHeadersDir(URL headersDir) throws IOException {
     this.packagesHeaderDirectory = new File(headersDir.getPath());
   }
