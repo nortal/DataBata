@@ -82,6 +82,7 @@ public final class PropagationUtils {
       String line = br.readLine();
       while (line != null) {
         result.append(line);
+        result.append("\n");
         line = br.readLine();
       }
     } catch (Exception e) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
-  <bean id="propagator" class="eu.webmedia.dbpropagation.Propagator" init-method="init" >
+  <bean id="propagator" class="eu.databata.engine.spring.PropagatorSpringInstance" init-method="init" >
 	<property name="jdbcTemplate" ref="jdbcTemplate" />	
     <property name="transactionManager" ref="transactionManager" />
     <property name="changes"  value="/WEB-INF/db/changes" />

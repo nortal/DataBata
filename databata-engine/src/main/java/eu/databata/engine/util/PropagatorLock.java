@@ -23,8 +23,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.BadSqlGrammarException;
 
 /**
- * Contains logic for locking and unlocking propagator execution. Lock table have to be provided to constructor
- * for this purpose.
+ * Contains logic for locking and unlocking propagator execution.
  * 
  * @author Maksim Boiko <mailto:max.boiko@gmail.com>
  *
@@ -38,6 +37,7 @@ public class PropagatorLock {
   }
   
   public boolean lock() {
+    log.info("Checking lock state...");
     String token = null;
     try {
       token = propagationDAO.getLockToken();
@@ -50,38 +50,43 @@ public class PropagatorLock {
     }
     int rowsChanged = 0;
     String myToken = null;
-    do {
-      if (token != null) {
-        log.info("Database is locked by another propagator. Waiting.");
-        waitPropagation();
-      }
+//    do {
+//      if (token != null) {
+//        log.info("Database is locked by another propagator. Waiting.");
+//        waitPropagation();
+//      }
       myToken = generateToken();
       rowsChanged = propagationDAO.updateLock(myToken);
       token = propagationDAO.getLockToken();
-    } while (!myToken.equals(token) || rowsChanged == 0);
-    return true;
+      boolean lockAquired =  myToken.equals(token) && rowsChanged == 1;
+      if(!lockAquired) {
+        log.info("Still locked.");
+      }
+      
+      return lockAquired;
+//    return true;
   }
   
   public void unlock() {
     propagationDAO.deleteLock();
   }
   
-  private void waitPropagation() {
-    String token = null;
-    do {
-      try {
-        Thread.sleep(5000);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-      log.info("Checking lock state...");
-      token = propagationDAO.getLockToken();
-      if (token != null) {
-        log.info("Still locked.");
-      }
-    } while (token != null);
-    log.info("Database is unlocked!");
-  }
+//  private void waitPropagation() {
+//    String token = null;
+//    do {
+//      try {
+//        Thread.sleep(5000);
+//      } catch (InterruptedException e) {
+//        e.printStackTrace();
+//      }
+//      log.info("Checking lock state...");
+//      token = propagationDAO.getLockToken();
+//      if (token != null) {
+//        log.info("Still locked.");
+//      }
+//    } while (token != null);
+//    log.info("Database is unlocked!");
+//  }
 
   private String generateToken() {
     return StringUtils.abbreviate("" + Math.random(), 200);

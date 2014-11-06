@@ -16,7 +16,11 @@
 package eu.databata.engine.spring;
 
 import eu.databata.Propagator;
+import eu.databata.PropagatorExecutionPrecondition;
 import eu.databata.PropagatorFileHandler;
+import eu.databata.PropagatorLockExecutionPrecondition;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PropagatorSpringInstance extends Propagator {
 
@@ -60,4 +64,10 @@ public class PropagatorSpringInstance extends Propagator {
     return ".*\\.sql";
   }
   
+  @Override
+  protected List<PropagatorExecutionPrecondition> getPreconditions() {
+    List<PropagatorExecutionPrecondition> preconditions = new ArrayList<PropagatorExecutionPrecondition>();
+    preconditions.add(new PropagatorLockExecutionPrecondition(propagatorLock));
+    return preconditions;
+  }
 }

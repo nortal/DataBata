@@ -99,6 +99,10 @@ public class SupplementPropagation {
 
       return;
     }
+    if(propagatedFiles == null) {
+      LOG.info("Nothing to propagate");
+      return;
+    }
     Set<String> localObjectsHashes = new HashSet<String>();
     Set<String> modifiedObjectsNames = new HashSet<String>();
     List<PropagationObject> propagationObjectsToUpdate = new ArrayList<PropagationObject>();
