@@ -14,9 +14,10 @@ import eu.databata.engine.util.PropagationUtils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -110,7 +111,7 @@ public class PropagatorOsgiFileHandler implements PropagatorFileHandler {
   private File makeFile(URL url) {
     BufferedReader br;
     try {
-      br = new BufferedReader(new InputStreamReader(url.openStream()));
+      br = new BufferedReader(new InputStreamReader(url.openStream(), PropagationUtils.INPUTFILES_ENCODING));
 
       String tmpDir = System.getProperty("java.io.tmpdir");
       LOG.info("Url " + url.getPath());
@@ -122,8 +123,9 @@ public class PropagatorOsgiFileHandler implements PropagatorFileHandler {
         file.createNewFile();
       }
 
-      FileWriter fw = new FileWriter(file.getAbsoluteFile());
-      BufferedWriter bw = new BufferedWriter(fw);
+      BufferedWriter bw =
+          new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file.getAbsoluteFile()),
+                                                    PropagationUtils.INPUTFILES_ENCODING));
 
       while ((inputLine = br.readLine()) != null) {
         bw.write(inputLine + "\n");

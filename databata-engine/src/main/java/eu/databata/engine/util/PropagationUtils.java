@@ -40,7 +40,7 @@ import org.springframework.dao.DataAccessException;
  */
 public final class PropagationUtils {
   private static final Logger LOG = Logger.getLogger(PropagationUtils.class);
-  private static final String INPUTFILES_ENCODING = "UTF-8";
+  public static final String INPUTFILES_ENCODING = "UTF-8";
 
   /**
    * This method is suitable for reading files not larger than 2 GB.
