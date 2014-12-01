@@ -45,7 +45,9 @@
 		<property name="headersDir" value="META-INF/sys_entity_db/headers" />
 		<property name="packageDir" value="META-INF/sys_entity_db/packages" />
 		<property name="viewDir" value="META-INF/sys_entity_db/views" />
-		<property name="triggerDir" value="META-INF/sys_entity_db/triggers" />
+	        <property name="functionsDir" value="META-INF/sys_entity_db/functions" />
+                <property name="proceduresDir" value="META-INF/sys_entity_db/procedures" />
+        	<property name="triggerDir" value="META-INF/sys_entity_db/triggers" />
 		<property name="useTestData" value="${db.propagation.test.data.used}" />
 		<property name="disableDbPropagation" value="${db.propagation.disable}" />
 		<property name="environmentSql" value="${db.propagation.environment}" />
