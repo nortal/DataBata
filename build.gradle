@@ -1,3 +1,31 @@
+apply from: project.rootDir.path + "/gradle-include/version.gradle"
+
+group = "eu.databata"
+version = globalVersion.version
+
+/**
+ * Configuration that is applied only to JAVA subprojects
+ */
+def javaProjects() {
+	return subprojects.findAll { new File(it.projectDir, "src/main/java").exists() }
+}
+
+configure(javaProjects()) {
+	apply plugin: 'java'
+	
+	repositories {
+		mavenCentral()
+		maven { url "https://code.lds.org/nexus/content/groups/main-repo" }
+		maven { url "http://repository.springsource.com/maven/bundles/release" }
+		maven { url "http://repository.springsource.com/maven/bundles/external" }
+	}
+	
+	compileJava {
+		sourceCompatibility = 1.6
+		targetCompatibility = 1.6
+	}
+}
+
 subprojects {
     apply plugin: 'license'
     
@@ -18,15 +46,4 @@ buildscript {
 	}
 }
 
-/*
- * Gets the version name from the latest Git tag
- */
- def getVersionName() {
-	def stdout = new ByteArrayOutputStream()
-	exec {
-		commandLine 'git', 'describe', '--tags'
-		standardOutput = stdout
-	}
-	return stdout.toString().trim()
-}
 

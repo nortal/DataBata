@@ -1,0 +1,57 @@
+/**
+ * Can be applied to projects where java plugin has been applied as well.
+ * Will set globalVersion variable for root project
+ * 
+ * Version is derived from latest git tag and "how far are we from last tag"
+ * For example 20 commits ahead of tag ver-3.1.1 would produce version 3.1.1.20
+ * 
+ * @author Priit Liivak
+ */
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
+
+if(!rootProject.hasProperty("globalVersion")){
+	def longVersionName = "git -C ${rootDir} describe --tags --long".execute().text.trim()
+	def currentBranchName = "git -C ${rootDir} rev-parse --abbrev-ref HEAD".execute().text.trim()
+	
+	rootProject.ext.set("globalVersion", new Version(longVersionName, currentBranchName))
+	println "Defined global version: "+rootProject.globalVersion
+}
+
+version = rootProject.globalVersion
+status = version.status
+
+class Version {
+	String status
+	String version
+	
+	Date buildTime
+
+	Version(String longVersionName, String currentBranchName) {
+		buildTime = new Date()
+
+		def (prefix, fullVersionTag, versionBuild, gitSha) = longVersionName.tokenize('-')
+		def(versionMajor, versionMinor) = fullVersionTag.tokenize('.')
+		version = "$versionMajor.$versionMinor.$versionBuild"
+		
+		//Override if not release branch
+		if (currentBranchName.equals('master')) {
+			status = 'release'
+		}else{
+			status = 'snapshot'
+		}
+		
+	}
+
+	String getTimestamp() {
+		// Convert local file timestamp to UTC
+		def format = new SimpleDateFormat('yyyyMMddHHmmss')
+		format.setCalendar(Calendar.getInstance(TimeZone.getTimeZone('UTC')));
+		return format.format(buildTime)
+	}
+
+	String toString() {
+		status+"-"+version
+	}
+}

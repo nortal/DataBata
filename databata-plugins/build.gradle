@@ -6,20 +6,9 @@ dependencies {
     compile gradleApi()
 }
 
-//dependencies {
-
-//}
 repositories {
     mavenCentral()
 }
  
 group='eu.databata.gradle'   //Group name makes easier to manager the packages.
 version='1.1-SNAPSHOT'
- 
-//uploadArchives {
-//    repositories {
-//        mavenDeployer {
-//            repository(url: uri('../repo'))
-//        }
-//    }
-//}
