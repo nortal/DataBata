@@ -1,8 +1,5 @@
 apply from: project.rootDir.path + "/gradle-include/version.gradle"
 
-group = "eu.databata"
-version = globalVersion.version
-
 /**
  * Configuration that is applied only to JAVA subprojects
  */
@@ -12,6 +9,11 @@ def javaProjects() {
 
 configure(javaProjects()) {
 	apply plugin: 'java'
+	apply plugin: 'maven'
+	apply from: project.rootDir.path + "/gradle-include/artifactory.gradle"
+	
+	version = rootProject.globalVersion.version
+	status = rootProject.globalVersion.status
 	
 	repositories {
 		mavenCentral()
@@ -20,29 +22,48 @@ configure(javaProjects()) {
 		maven { url "http://repository.springsource.com/maven/bundles/external" }
 	}
 	
+	configurations { published }
+	
 	compileJava {
 		sourceCompatibility = 1.6
 		targetCompatibility = 1.6
 	}
 }
 
+/**
+ * Configuration applied to all subprojects
+ */
 subprojects {
-    apply plugin: 'license'
-    
-    license {
-      header rootProject.file('LICENSE_HEADER')
-      strictCheck true
-   }
+	group = "org.databata"
+	
+	apply plugin: 'license'
+	
+	license {
+		header rootProject.file('LICENSE_HEADER')
+		strictCheck true
+	}
 }
 
 
 buildscript {
 	repositories {
 		mavenCentral()
+		jcenter()
 	}
-	
+
 	dependencies {
 		classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.7.0'
+		classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1'
+	}
+
+	configurations.classpath {
+		resolutionStrategy {
+			failOnVersionConflict()
+			cacheDynamicVersionsFor 0, 'seconds'
+			cacheChangingModulesFor 0, 'seconds'
+			force "commons-codec:commons-codec:1.8"
+			force "com.google.guava:guava:15.0"
+		}
 	}
 }
 

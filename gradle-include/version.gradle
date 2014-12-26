@@ -35,7 +35,7 @@ class Version {
 		def(versionMajor, versionMinor) = fullVersionTag.tokenize('.')
 		version = "$versionMajor.$versionMinor.$versionBuild"
 		
-		//Override if not release branch
+		// Only master branch is considered a release. Other branches produce snapshots
 		if (currentBranchName.equals('master')) {
 			status = 'release'
 		}else{
