@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat
 
 if(!rootProject.hasProperty("globalVersion")){
 	def longVersionName = "git -C ${rootDir} describe --tags --long".execute().text.trim()
-	def currentBranchName = "git -C ${rootDir} rev-parse --abbrev-ref HEAD".execute().text.trim()
+	def currentBranchName = "git -C ${rootDir} name-rev --name-only HEAD".execute().text.trim()
 	
 	rootProject.ext.set("globalVersion", new Version(longVersionName, currentBranchName))
 	println "Defined global version: "+rootProject.globalVersion
