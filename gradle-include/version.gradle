@@ -31,6 +31,8 @@ class Version {
 	Version(String longVersionName, String currentBranchName) {
 		buildTime = new Date()
 
+		println "Building version on branch "+currentBranchName+" with tag "+longVersionName+" at "+buildTime
+		
 		def (prefix, fullVersionTag, versionBuild, gitSha) = longVersionName.tokenize('-')
 		def(versionMajor, versionMinor) = fullVersionTag.tokenize('.')
 		version = "$versionMajor.$versionMinor.$versionBuild"
