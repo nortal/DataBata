@@ -34,7 +34,7 @@ configure(javaProjects()) {
  * Configuration applied to all subprojects
  */
 subprojects {
-	group = "org.databata"
+	group = "eu.databata"
 	
 	apply plugin: 'license'
 	
