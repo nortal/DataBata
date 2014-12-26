@@ -1,0 +1,54 @@
+/**
+ * Make pom.xml compatible with Maven Central requirements.
+ * spring-framework build file used as an example: https://github.com/spring-projects/spring-social/blob/master/publish-maven.gradle 
+ */
+apply plugin: "maven"
+
+install {
+	repositories.mavenInstaller { customizePom(pom, project) }
+}
+
+def customizePom(pom, gradleProject) {
+	pom.whenConfigured { generatedPom ->
+
+		// eliminate test-scoped dependencies (no need in maven central poms)
+		generatedPom.dependencies.removeAll { dep ->
+			dep.scope == "test"
+		}
+
+		// add all items necessary for maven central publication
+		generatedPom.project {
+			name = gradleProject.description
+			description = gradleProject.description
+			url = "https://github.com/nortal/DataBata"
+			organization {
+				name = "Nortal AS"
+				url = "http://www.nortal.com/"
+			}
+			licenses {
+				license {
+					name "The Apache Software License, Version 2.0"
+					url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+					distribution "repo"
+				}
+			}
+			scm {
+				url = "https://github.com/nortal/DataBata"
+				connection = "scm:git:git://github.com/nortal/DataBata"
+				developerConnection = "scm:git:git://github.com/nortal/DataBata"
+			}
+			developers {
+				developer {
+					id = "maxboiko"
+					name = "Maksim Boiko"
+					email = "max.boiko@gmail.com"
+				}
+				developer {
+					id = "stalnuhhin"
+					name = "Anton Stalnuhhin"
+					email = "Anton.Stalnuhhin@nortal.com"
+				}
+			}
+		}
+	}
+}

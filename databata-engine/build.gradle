@@ -2,11 +2,12 @@ defaultTasks 'jar'
 apply plugin: 'maven-publish'
 apply plugin: 'osgi'
 
+description = "DataBata Engine"
 
 dependencies {
   compile files("lib/sqltool.jar")
   compile 'commons-lang:commons-lang:2.4'
-  compile 'log4j:log4j:1.2.+'
+  compile 'log4j:log4j:[1.2,)'
   compile 'org.springframework:org.springframework.jdbc:3.1.3.RELEASE'
   compile 'org.springframework.osgi:spring-osgi-core:1.2.1'
   compile 'org.osgi:org.osgi.core:4.3.1'
