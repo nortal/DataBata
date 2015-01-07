@@ -10,31 +10,7 @@
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd 
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-	<bean id="placeholderConfig"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="location" value="classpath:databata.properties"></property>
-		<property name="ignoreUnresolvablePlaceholders" value="true"></property>
-	</bean>
-
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.SingleConnectionDataSource">
-		<property name="driverClassName" value="${db.propagation.driver}" />
-		<property name="url" value="${db.propagation.connection-url}" />
-		<property name="username" value="${db.propagation.user}" />
-		<property name="password" value="${db.propagation.password}" />
-		<property name="suppressClose" value="true" />
-	</bean>
-
-
-	<bean id="transactionManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-
-	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-		<property name="dataSource" ref="dataSource" />
-		<property name="ignoreWarnings" value="false" />
-	</bean>
+	<import resource="propagator-db-beans.xml" />
 
 	<bean id="propagator" class="eu.databata.engine.spring.PropagatorSpringInstance"
 		init-method="init">
@@ -45,13 +21,12 @@
 		<property name="useTestData" value="${db.propagation.test.data.used}" />
 		<property name="disableDbPropagation" value="${db.propagation.disable}" />
 		<property name="environmentSql" value="${db.propagation.environment}" />
-		<property name="revalidationStatement" value="${db.propagation.revalidation}" />
-		<property name="enableAutomaticTransformation" value="${db.propagation.automatic.transformation}" />
+		<property name="enableAutomaticTransformation" value="true" />
 		<property name="moduleName" value="${db.propagation.module.name}" />
 		<property name="versionProvider" ref="versionProvider" />
 	</bean>
 
 	<bean id="versionProvider" class="eu.databata.engine.version.StandardVersionProvider">
-		<property name="version" value="YOUR_VERSION" />
+		<property name="version" value="1.1.4.1" />
 	</bean>
 </beans>

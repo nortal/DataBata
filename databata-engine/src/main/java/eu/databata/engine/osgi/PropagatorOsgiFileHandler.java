@@ -61,7 +61,7 @@ public class PropagatorOsgiFileHandler implements PropagatorFileHandler {
   }
 
   @Override
-  public Map<String, File> findChanges(File directory) {
+  public Map<String, File> findChanges(File directory, String databaseCode) {
     URL[] changesDirs = getChangesDirs(directory);
     LOG.info("Found " + changesDirs.length + " changes");
     Map<String, File> changes = new TreeMap<String, File>();

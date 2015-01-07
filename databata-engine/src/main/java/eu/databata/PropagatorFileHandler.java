@@ -41,7 +41,7 @@ public interface PropagatorFileHandler {
    * 
    * @return Map of found directories where key is usually directory name.
    */
-  Map<String, File> findChanges(File directory);
+  Map<String, File> findChanges(File directory, String databaseCode);
   
   File[] findSqls(File directory, String fileSearchRegexp);
 }

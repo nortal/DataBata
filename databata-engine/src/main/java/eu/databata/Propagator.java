@@ -177,7 +177,7 @@ public abstract class Propagator implements InitializingBean {
 
   // Main propagation block
   private void propagateStructure() {
-    changes = getFileHandler().findChanges(changesDir);
+    changes = getFileHandler().findChanges(changesDir, PropagationUtils.getDatabaseCode(databaseName));
 
     StringBuilder sb = new StringBuilder("The following change directories were read: \n");
     for (Entry<String, File> entry : changes.entrySet()) {
