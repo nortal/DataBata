@@ -8,42 +8,34 @@ def javaProjects() {
 }
 
 configure(javaProjects()) {
-	apply plugin: 'java'
-	apply plugin: 'maven'
-	apply from: project.rootDir.path + "/gradle-include/artifactory.gradle"
-	
 	version = rootProject.globalVersion.version
 	status = rootProject.globalVersion.status
 	
+	apply plugin: 'java'
+	apply plugin: 'maven'
+
 	repositories {
 		mavenCentral()
 		maven { url "https://code.lds.org/nexus/content/groups/main-repo" }
 		maven { url "http://repository.springsource.com/maven/bundles/release" }
 		maven { url "http://repository.springsource.com/maven/bundles/external" }
 	}
-	
-	configurations { published }
-	
+
 	compileJava {
 		sourceCompatibility = 1.6
 		targetCompatibility = 1.6
 	}
-	
+
 	task sourcesJar(type: Jar, dependsOn: classes) {
 		classifier = 'sources'
 		from sourceSets.main.allSource
 	}
-	
+
 	task javadocJar(type: Jar, dependsOn: javadoc) {
 		classifier = 'javadoc'
 		from javadoc.destinationDir
 	}
-	
-	artifacts {
-		archives sourcesJar
-		archives javadocJar
-	}
-	
+
 }
 
 /**
@@ -51,9 +43,9 @@ configure(javaProjects()) {
  */
 subprojects {
 	group = "eu.databata"
-	
+
 	apply plugin: 'license'
-	
+
 	license {
 		header rootProject.file('LICENSE_HEADER')
 		strictCheck true
@@ -69,7 +61,7 @@ buildscript {
 
 	dependencies {
 		classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.7.0'
-		classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1'
+		classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.1'
 	}
 
 	configurations.classpath {
@@ -77,10 +69,12 @@ buildscript {
 			failOnVersionConflict()
 			cacheDynamicVersionsFor 0, 'seconds'
 			cacheChangingModulesFor 0, 'seconds'
-			force "commons-codec:commons-codec:1.8"
-			force "com.google.guava:guava:15.0"
+			//Resolve conflicting transitive dependencies
+			force "commons-lang:commons-lang:2.4"
 		}
 	}
 }
+
+task wrapper(type: Wrapper) { gradleVersion = '2.1' }
 
 
