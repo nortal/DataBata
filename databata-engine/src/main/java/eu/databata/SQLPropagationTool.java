@@ -37,7 +37,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 /**
  * Wrapper for SqlTool class, which handles some common exceptions.
  * 
- * @author Maksim Boiko <mailto:max.boiko@gmail.com>
+ * @author Maksim Boiko  {@literal<mailto:max.boiko@gmail.com>}
  */
 public class SQLPropagationTool {
   private static final Logger LOG = Logger.getLogger(SQLPropagationTool.class);

@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * performs search and replace in given string, where DBMS variable stands for ORA, SA, MSS, etc. according to database
  * driver used.
  * 
- * @author Maksim Boiko <mailto:max.boiko@gmail.com>
+ * @author Maksim Boiko  {@literal<mailto:max.boiko@gmail.com>}
  */
 public class StandardTransformer {
   private static final Logger LOG = Logger.getLogger(StandardTransformer.class);

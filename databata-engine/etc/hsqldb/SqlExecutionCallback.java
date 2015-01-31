@@ -3,7 +3,7 @@ package org.hsqldb.cmdline;
 import java.sql.SQLException;
 
 /**
- * @author Maksim Boiko <mailto:max.boiko@gmail.com>
+ * @author Maksim Boiko  {@literal<mailto:max.boiko@gmail.com>}
  */
 public interface SqlExecutionCallback {
   /**

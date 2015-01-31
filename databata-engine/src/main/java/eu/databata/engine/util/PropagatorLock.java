@@ -25,7 +25,7 @@ import org.springframework.jdbc.BadSqlGrammarException;
 /**
  * Contains logic for locking and unlocking propagator execution.
  * 
- * @author Maksim Boiko <mailto:max.boiko@gmail.com>
+ * @author Maksim Boiko  {@literal<mailto:max.boiko@gmail.com>}
  *
  */
 public class PropagatorLock {

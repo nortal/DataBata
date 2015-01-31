@@ -24,7 +24,7 @@ import java.util.Scanner;
 import org.apache.log4j.Logger;
 
 /**
- * @author Maksim Boiko <mailto:max.boiko@gmail.com>
+ * @author Maksim Boiko  {@literal<mailto:max.boiko@gmail.com>}
  */
 public class OracleSQLExceptionHandler implements SQLExceptionHandler {
   private static final Logger LOG = Logger.getLogger(OracleSQLExceptionHandler.class);

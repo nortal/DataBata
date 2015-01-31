@@ -18,7 +18,7 @@ package eu.databata.engine.rewriterule;
 import java.util.List;
 
 /**
- * @author Aleksei Lissitsin <aleksei.lissitsin@webmedia.ee>
+ * @author Aleksei Lissitsin {@literal <aleksei.lissitsin@webmedia.ee>}
  */
 public class ChainedRewriteRule implements RewriteRule {
   private List<RewriteRule> rules;

@@ -40,7 +40,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * Provides propagation logging to database. 
- * @author Aleksei Lissitsin <aleksei.lissitsin@webmedia.ee>
+ * @author Aleksei Lissitsin  {@literal<aleksei.lissitsin@webmedia.ee>}
  */
 public class DBHistoryLogger {
   private Queue<HistoryLogEntry> queue = new LinkedList<HistoryLogEntry>();
