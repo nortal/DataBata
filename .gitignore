@@ -47,3 +47,7 @@ databata-examples/databata.properties
 databata-plugins/.settings
 databata-engine/.settings
 .settings
+
+#Mac Finder
+.DS_Store
+

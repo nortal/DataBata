@@ -13,7 +13,7 @@
 --   See the License for the specific language governing permissions and
 --   limitations under the License.
 --
-
+DROP database IF EXISTS #{db.propagation.user};
 DROP USER IF EXISTS #{db.propagation.user};
 
 CREATE USER #{db.propagation.user} WITH PASSWORD '#{db.propagation.password}';

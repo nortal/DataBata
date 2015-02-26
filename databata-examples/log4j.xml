@@ -20,7 +20,7 @@
 	
 	
 	<category name="org.hsqldb.cmdline" additivity="false">
-         <priority value="INFO" />
+         <priority value="DEBUG" />
          <appender-ref ref="CONSOLE" />
     </category>
 	
