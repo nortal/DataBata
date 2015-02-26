@@ -2,3 +2,4 @@ ID|TEST|COMMENTS
 11|INSERT first value|[null]
 12|INSERT second value updated.|[null]
 13|Lisa kolmas väärtus (äöõüžšÄÖÕÜŠŽ)|[null]
+-1|IF test: MUST go to Oracle database 1|[null]

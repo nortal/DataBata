@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  * the form "vsq_view_name" or "v_view_name", and attempts to process these first. As a convenience, it also removes
  * ending semicolons in case there are any.
  * 
- * @author Aleksei Lissitsin <aleksei.lissitsin@webmedia.ee>
+ * @author Aleksei Lissitsin  {@literal<aleksei.lissitsin@webmedia.ee>}
  * @author Maksim Boiko
  */
 public class ViewPropagation extends SupplementPropagation {

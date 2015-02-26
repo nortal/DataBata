@@ -1,0 +1,1 @@
+update test set comments = 'карамба' where id = 1;

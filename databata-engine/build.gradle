@@ -1,92 +1,77 @@
-group = "eu.databata"
-version = "3.1.1"
-
-buildscript {
-	repositories {
-		//maven {
-		//	url 'https://artifact.nortal.com/repo'
-		//	credentials {
-		//		username = "${artifactory_user}"
-		//		password = "${artifactory_password}"
-		//	}
-		//}
-	}
-	dependencies {
-		//classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.0.1')
-	}
-}
-
-
 defaultTasks 'jar'
-apply plugin: 'java'
-apply plugin: 'maven-publish'
-//apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'osgi'
+apply from: project.rootDir.path + "/gradle-include/bintray.gradle"
 
-
-group = 'com.nortal'
-//artifactory {
-//	contextUrl = "https://artifact.nortal.com"   //The base Artifactory URL if not overridden by the publisher/resolver
-//	publish {
-//		repository {
-//			repoKey = 'nortal-libs-release-local'
-//			username = "${artifactory_user}"
-//			password = "${artifactory_password}"
-//			maven = true
-//		}
-//		defaults {
-//			publications 'main'
-//		}
-//	}
-
-//}
-
-repositories {
-  mavenCentral()
-  maven { url "https://code.lds.org/nexus/content/groups/main-repo" }
-  maven {url "http://repository.springsource.com/maven/bundles/release"}
-  maven {url "http://repository.springsource.com/maven/bundles/external"}
-}
+description = "DataBata Engine"
 
 dependencies {
-  compile files("lib/sqltool.jar")
-  compile 'commons-lang:commons-lang:2.4'
-  compile 'log4j:log4j:1.2.+'
-  compile 'org.springframework:org.springframework.jdbc:3.1.3.RELEASE'
-  compile 'org.springframework.osgi:spring-osgi-core:1.2.1'
-  compile 'org.osgi:org.osgi.core:4.3.1'
+	compile files("lib/sqltool.jar")
+	compile 'commons-lang:commons-lang:2.4'
+	compile 'log4j:log4j:[1.2,)'
+	compile 'org.springframework:org.springframework.jdbc:3.1.3.RELEASE'
+	compile 'org.springframework.osgi:spring-osgi-core:1.2.1'
+	compile 'org.osgi:org.osgi.core:4.3.1'
 
-  runtime 'com.oracle:ojdbc6:11.2.0.3'
-  compile 'org.postgresql:com.springsource.org.postgresql.jdbc4:8.3.604'
-  runtime 'org.hsqldb:hsqldb:2.2.9'
-  runtime 'commons-logging:commons-logging:1.1.3'
+	runtime 'com.oracle:ojdbc6:11.2.0.3'
+	compile 'org.postgresql:com.springsource.org.postgresql.jdbc4:8.3.604'
+	runtime 'org.hsqldb:hsqldb:2.2.9'
+	runtime 'commons-logging:commons-logging:1.1.3'
+}
+
+// Add sourceJar and javadocJar to artifacts that will be published
+artifacts {
+	archives sourcesJar
+	archives javadocJar
 }
 
 jar.doFirst {
-  sourceSets.main.java.srcDirs.each {
-    from it
-  }
+	sourceSets.main.java.srcDirs.each { from it }
 }
 
 jar {
-  include('**/*.java')
-  include('**/*.class')
-  include('**/*.xml')
-  include('**/*.sql')
-  include('**/*.properties')
-  exclude('databata.properties')
-  exclude('main/**')
-  manifest {
-    instruction 'Export-Package', 'META-INF.databata, eu.databata.engine, *'
-  }
+	include('**/*.java')
+	include('**/*.class')
+	include('**/*.xml')
+	include('**/*.sql')
+	include('**/*.properties')
+	exclude('databata.properties')
+	exclude('main/**')
+	manifest { instruction 'Export-Package', 'META-INF.databata, eu.databata.engine, *' }
 }
 
-publishing {
-	publications {
-		main(MavenPublication) {
-			from components.java
-			artifact jar
+// Customize pom.xml to match the requirements of maven central
+install {
+	repositories.mavenInstaller { customizePom(pom, project) }
+}
+
+def customizePom(pom, gradleProject) {
+	pom.whenConfigured { generatedPom ->
+
+		// add all items necessary for maven central publication
+		generatedPom.project {
+			name 'DataBata'
+			description 'Incremental database change propagation tool'
+			url 'https://github.com/nortal/DataBata'
+			licenses {
+				license {
+					name 'The Apache Software License, Version 2.0'
+					url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+					distribution 'repo'
+				}
+			}
+			developers {
+				developer {
+					id 'baxboiko'
+					name 'Maksim Boiko'
+					email 'max.boiko@gmail.com'
+				}
+			}
+			inceptionYear '2014'
+			scm {
+				url 'https://github.com/nortal/DataBata'
+				connection 'scm:git:git@github.com:nortal/DataBata.git'
+				developerConnection 'scm:git:git@github.com:nortal/DataBata.git'
+			}
 		}
 	}
 }
-

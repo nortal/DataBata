@@ -18,7 +18,7 @@ package eu.databata.engine.model;
 import java.io.File;
 
 /**
- * @author Maksim Boiko <mailto:max.boiko@gmail.com>
+ * @author Maksim Boiko  {@literal<mailto:max.boiko@gmail.com>}
  */
 public class PropagationObject {
   private String moduleName;

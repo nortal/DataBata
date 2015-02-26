@@ -42,9 +42,6 @@
 		<property name="transactionManager" ref="transactionManager" />
 
 		<property name="changes" value="WEB-INF/db/changes" />
-		<property name="packageDir" value="WEB-INF/db/packages" />
-		<property name="viewDir" value="WEB-INF/db/views" />
-		<property name="triggerDir" value="WEB-INF/db/triggers" />
 		<property name="useTestData" value="${db.propagation.test.data.used}" />
 		<property name="disableDbPropagation" value="${db.propagation.disable}" />
 		<property name="environmentSql" value="${db.propagation.environment}" />

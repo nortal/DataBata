@@ -1,32 +1,80 @@
+apply from: project.rootDir.path + "/gradle-include/version.gradle"
+
+/**
+ * Configuration that is applied only to JAVA subprojects
+ */
+def javaProjects() {
+	return subprojects.findAll { new File(it.projectDir, "src/main/java").exists() }
+}
+
+configure(javaProjects()) {
+	version = rootProject.globalVersion.version
+	status = rootProject.globalVersion.status
+	
+	apply plugin: 'java'
+	apply plugin: 'maven'
+
+	repositories {
+		mavenCentral()
+		maven { url "https://code.lds.org/nexus/content/groups/main-repo" }
+		maven { url "http://repository.springsource.com/maven/bundles/release" }
+		maven { url "http://repository.springsource.com/maven/bundles/external" }
+	}
+
+	compileJava {
+		sourceCompatibility = 1.6
+		targetCompatibility = 1.6
+	}
+
+	task sourcesJar(type: Jar, dependsOn: classes) {
+		classifier = 'sources'
+		from sourceSets.main.allSource
+	}
+
+	task javadocJar(type: Jar, dependsOn: javadoc) {
+		classifier = 'javadoc'
+		from javadoc.destinationDir
+	}
+
+}
+
+/**
+ * Configuration applied to all subprojects
+ */
 subprojects {
-    apply plugin: 'license'
-    
-    license {
-      header rootProject.file('LICENSE_HEADER')
-      strictCheck true
-   }
+	group = "eu.databata"
+
+	apply plugin: 'license'
+
+	license {
+		header rootProject.file('LICENSE_HEADER')
+		strictCheck true
+	}
 }
 
 
 buildscript {
 	repositories {
 		mavenCentral()
+		jcenter()
 	}
-	
+
 	dependencies {
 		classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.7.0'
+		classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.1'
+	}
+
+	configurations.classpath {
+		resolutionStrategy {
+			failOnVersionConflict()
+			cacheDynamicVersionsFor 0, 'seconds'
+			cacheChangingModulesFor 0, 'seconds'
+			//Resolve conflicting transitive dependencies
+			force "commons-lang:commons-lang:2.4"
+		}
 	}
 }
 
-/*
- * Gets the version name from the latest Git tag
- */
- def getVersionName() {
-	def stdout = new ByteArrayOutputStream()
-	exec {
-		commandLine 'git', 'describe', '--tags'
-		standardOutput = stdout
-	}
-	return stdout.toString().trim()
-}
+task wrapper(type: Wrapper) { gradleVersion = '2.1' }
+
 

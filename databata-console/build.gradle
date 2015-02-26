@@ -1,14 +1,6 @@
-apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'war'
 apply plugin: 'jetty'
-
-repositories {
-    mavenCentral()
-    maven { url "https://code.lds.org/nexus/content/groups/main-repo" }
-    maven { url "http://repository.springsource.com/maven/bundles/release" }
-    maven { url "http://repository.springsource.com/maven/bundles/external" }
-}
 
 dependencies {
 	compile project(':databata-engine');

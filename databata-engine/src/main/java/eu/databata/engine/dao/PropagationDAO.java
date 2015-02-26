@@ -43,7 +43,7 @@ import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 /**
- * @author Maksim Boiko <mailto:max.boiko@gmail.com>
+ * @author Maksim Boiko  {@literal<mailto:max.boiko@gmail.com>}
  */
 public class PropagationDAO extends JdbcDaoSupport {
   private static final Logger LOG = Logger.getLogger(PropagationDAO.class);

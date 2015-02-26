@@ -46,7 +46,7 @@ import org.apache.log4j.Logger;
  * An object of this class provides the propagation of one type of supplement data, i.e. packages, package headers,
  * views, or triggers.
  * 
- * @author Aleksei Lissitsin <aleksei.lissitsin@webmedia.ee>
+ * @author Aleksei Lissitsin  {@literal<aleksei.lissitsin@webmedia.ee>}
  * @author Maksim Boiko
  */
 public class SupplementPropagation {

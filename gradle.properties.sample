@@ -1,0 +1,6 @@
+# These are required for deploying releases to Nortal Artifactory
+# artifactory_password should be encrypted password obtained from Artifactory
+# These values can be also defined in ~/.gradle/gradle.properties
+
+artifactory_user=
+artifactory_password=
