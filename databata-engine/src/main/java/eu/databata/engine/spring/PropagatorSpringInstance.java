@@ -19,11 +19,18 @@ import eu.databata.Propagator;
 import eu.databata.PropagatorExecutionPrecondition;
 import eu.databata.PropagatorFileHandler;
 import eu.databata.PropagatorLockExecutionPrecondition;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.core.io.Resource;
 
 public class PropagatorSpringInstance extends Propagator {
 
+  
+  public void setChanges(Resource changesDir) throws IOException {
+    this.changesDir = changesDir.getFile();
+  }
+  
   @Override
   protected PropagatorFileHandler getFileHandler() {
     return new PropagatorSpringFileHandler();

@@ -15,6 +15,10 @@
  */
 package eu.databata.engine.osgi;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
 import eu.databata.Propagator;
 import eu.databata.PropagatorExecutionPrecondition;
 import eu.databata.PropagatorFileHandler;
@@ -33,6 +37,10 @@ public class PropagatorOsgiInstance extends Propagator implements BundleContextA
     PropagatorOsgiFileHandler handler = new PropagatorOsgiFileHandler();
     handler.setBundle(bundleContext.getBundle());
     return handler;
+  }
+  
+  public void setChanges(URL changesDir) throws IOException {
+    this.changesDir = new File(changesDir.getPath());
   }
 
   @Override

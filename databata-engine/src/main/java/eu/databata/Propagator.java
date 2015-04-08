@@ -100,7 +100,7 @@ public abstract class Propagator implements InitializingBean {
   private File triggersDirectory;
   private File functionsDirectory;
   private File proceduresDirectory;
-  private File changesDir;
+  protected File changesDir;
 
   private SupplementPropagation packageHeaders = null;
   private SupplementPropagation packages = null;
@@ -111,7 +111,7 @@ public abstract class Propagator implements InitializingBean {
 
   public Propagator() {
   }
-
+  
   public void init() {
     LOG.info(this.moduleName + " starting propagation. " + new Date());
 
@@ -328,14 +328,6 @@ public abstract class Propagator implements InitializingBean {
   // Property setters
   public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
-  }
-
-  /**
-   * Accepts the collection of change directories. In every directory it will look for an order file with an order key,
-   * if it does not exist the directory name will be taken as the order key.
-   */
-  public void setChanges(URL changesDir) throws IOException {
-    this.changesDir = new File(changesDir.getPath());
   }
 
   public void setFunctionsDir(URL functionsDir) throws IOException {

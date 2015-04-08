@@ -51,7 +51,7 @@ public class PropagatorSpringFileHandler implements PropagatorFileHandler {
     for (File file : directory.listFiles(new ChangesDirFilter(databaseCode))) {
       if (file.isDirectory()) {
         File orderFile = new File(file, ORDER_FILE);
-        if (orderFile.isFile()) {
+        if (orderFile != null && orderFile.isFile()) {
           changes.put(PropagationUtils.readFile(orderFile) + file.getName(), file);
         } else if (file.listFiles(new FilesByRegexpFilter("go.*\\.sql")).length > 0) {
           keyPrefix = keyPrefix.equals("") ? "" : keyPrefix + "/";
