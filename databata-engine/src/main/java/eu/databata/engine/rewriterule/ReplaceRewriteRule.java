@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.util.regex.Pattern;
 
 /**
- * @author Aleksei Lissitsin <aleksei.lissitsin@webmedia.ee>
+ * @author Aleksei Lissitsin  {@literal<aleksei.lissitsin@webmedia.ee>}
  */
 public class ReplaceRewriteRule implements RewriteRule, Serializable {
 

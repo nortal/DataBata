@@ -56,7 +56,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 /**
  * Main database propagation class. After setting public properties, call the init method.
  * 
- * @author Aleksei Lissitsin <aleksei.lissitsin@webmedia.ee>
+ * @author Aleksei Lissitsin  {@literal<aleksei.lissitsin@webmedia.ee>}
  * @author Maksim Boiko
  */
 public abstract class Propagator implements InitializingBean {

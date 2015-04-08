@@ -36,7 +36,7 @@ import org.springframework.dao.DataAccessException;
 /**
  * Utilities for database propagator.
  * 
- * @author Aleksei Lissitsin <aleksei.lissitsin@webmedia.ee>
+ * @author Aleksei Lissitsin  {@literal<aleksei.lissitsin@webmedia.ee>}
  */
 public final class PropagationUtils {
   private static final Logger LOG = Logger.getLogger(PropagationUtils.class);

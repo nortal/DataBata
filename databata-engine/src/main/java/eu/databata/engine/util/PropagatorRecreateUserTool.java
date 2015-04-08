@@ -29,7 +29,7 @@ import org.hsqldb.cmdline.SqlToolError;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 /**
- * @author Maksim Boiko <mailto:max.boiko@gmail.com>
+ * @author Maksim Boiko  {@literal<mailto:max.boiko@gmail.com>}
  */
 public class PropagatorRecreateUserTool {
   private static final Logger LOG = Logger.getLogger(PropagatorRecreateUserTool.class);

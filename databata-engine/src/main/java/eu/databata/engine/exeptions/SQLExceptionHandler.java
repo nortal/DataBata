@@ -24,7 +24,7 @@ import java.sql.SQLException;
 /**
  * We want to skip SQL exceptions with certain error codes and continue invocation of the propagator.
  * 
- * @author Maksim Boiko <mailto:max.boiko@gmail.com>
+ * @author Maksim Boiko  {@literal<mailto:max.boiko@gmail.com>}
  */
 public interface SQLExceptionHandler {
   boolean isHandled(SQLException e, String sql, SqlFile sqlFile, Connection newConnection);

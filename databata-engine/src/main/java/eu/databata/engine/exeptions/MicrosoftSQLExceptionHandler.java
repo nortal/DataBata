@@ -23,7 +23,7 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 /**
- * @author Igor Bossenko <mailto:igor@webmedia.ee>
+ * @author Igor Bossenko  {@literal<mailto:igor@webmedia.ee>}
  */
 public class MicrosoftSQLExceptionHandler implements SQLExceptionHandler {
   private static final Logger LOG = Logger.getLogger(MicrosoftSQLExceptionHandler.class);
