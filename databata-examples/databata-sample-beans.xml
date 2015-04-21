@@ -45,7 +45,7 @@
 		<property name="useTestData" value="${db.propagation.test.data.used}" />
 		<property name="disableDbPropagation" value="${db.propagation.disable}" />
 		<property name="environmentSql" value="${db.propagation.environment}" />
-		<property name="revalidationStatement" value="${db.propagation.revalidation}" />
+		<property name="revalidationStatement" value="select pg_sleep(0.1)" />
 		<property name="enableAutomaticTransformation" value="${db.propagation.automatic.transformation}" />
 		<property name="moduleName" value="${db.propagation.module.name}" />
 		<property name="versionProvider" ref="versionProvider" />

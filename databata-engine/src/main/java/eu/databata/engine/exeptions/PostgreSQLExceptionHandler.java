@@ -23,6 +23,10 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Exceptions handler according to documentation http://www.postgresql.org/docs/9.3/static/errcodes-appendix.html
+ * 
+ */
 public class PostgreSQLExceptionHandler implements SQLExceptionHandler {
   private static final Logger LOG = Logger.getLogger(PostgreSQLExceptionHandler.class);
 
@@ -33,8 +37,10 @@ public class PostgreSQLExceptionHandler implements SQLExceptionHandler {
     LOG.info("ErrorCode = [" + e.getErrorCode() + "]; SQLState = [" + e.getSQLState() + "]");
 
     try {
-      IGNORED_SQL_STATE state = IGNORED_SQL_STATE.valueOf("_" + e.getSQLState());
-      boolean ignored = state.isIgnored(lowerCaseSql);
+      //IGNORED_SQL_STATE state = IGNORED_SQL_STATE.valueOf("_" + e.getSQLState());
+      // O1 class is ignored because it is of warning class.
+      
+      boolean ignored = e.getSQLState().startsWith("01"); //|| state.isIgnored(lowerCaseSql);
       if (sqlFile != null && ignored) {
         // In case an error was handled e.g. script execution should continue we must reset connection
         sqlFile.getConnection().rollback();
@@ -43,7 +49,7 @@ public class PostgreSQLExceptionHandler implements SQLExceptionHandler {
       }
       return ignored;
     } catch (IllegalArgumentException iae) {
-      return false;
+      return e.getSQLState().startsWith("01");
     } catch (SQLException sqlException) {
       LOG.error(sqlException);
       return false;

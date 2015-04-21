@@ -15,6 +15,8 @@
  */
 package eu.databata;
 
+import javax.media.j3d.Sound;
+
 import java.util.Date;
 
 import org.springframework.transaction.TransactionDefinition;
@@ -115,7 +117,7 @@ public abstract class Propagator implements InitializingBean {
   public void init() {
     LOG.info(this.moduleName + " starting propagation. " + new Date());
 
-    if (disableDbPropagation) {
+    if (isPropagatorDisabled()) {
       LOG.info("Changes propagation is disabled.");
       return;
     }
@@ -140,6 +142,16 @@ public abstract class Propagator implements InitializingBean {
     LOG.info(this.moduleName + " finishing propagation." + new Date());
   }
 
+  private boolean isPropagatorDisabled() {
+    return disableDbPropagation || isPropagatorDisabledGlobally();
+  }
+  
+  private boolean isPropagatorDisabledGlobally() {
+    String databataEnabled = System.getProperty("databata.enabled");
+    System.out.println("\n\n sys prop " + databataEnabled);
+    return databataEnabled != null && !"true".equals(databataEnabled);
+  }
+  
   protected boolean checkPreconditions() {
     for (PropagatorExecutionPrecondition precondition : getPreconditions()) {
       if (!precondition.canExecute()) {
@@ -554,7 +566,7 @@ public abstract class Propagator implements InitializingBean {
 
   private void logPropagatorProperties() {
     LOG.info("\n\n====================== PROPAGATOR PROPERTIES =================== ");
-    LOG.info("Propagator enabled:          " + !disableDbPropagation);
+    LOG.info("Propagator enabled:          " + !isPropagatorDisabled());
     LOG.info("Simulation mode:             " + simulationMode);
     LOG.info("Test data used:              " + useTestData);
     LOG.info("Autotransformations enabled: " + enableAutomaticTransformation);
