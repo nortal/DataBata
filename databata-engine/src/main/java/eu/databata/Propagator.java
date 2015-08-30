@@ -15,8 +15,6 @@
  */
 package eu.databata;
 
-import javax.media.j3d.Sound;
-
 import java.util.Date;
 
 import org.springframework.transaction.TransactionDefinition;
