@@ -15,14 +15,14 @@
  */
 package eu.databata;
 
-import org.hsqldb.cmdline.SqlFile;
-
 import eu.databata.engine.util.DBHistoryLogger;
 import eu.databata.engine.util.PropagationUtils;
-
-import java.sql.SQLException;
 import org.apache.log4j.Logger;
 import org.hsqldb.cmdline.SqlExecutionCallback;
+import org.hsqldb.cmdline.SqlFile;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * @author Maksim Boiko  {@literal<mailto:max.boiko@gmail.com>}
@@ -53,10 +53,15 @@ public class StandardSqlExecutionCallback implements SqlExecutionCallback {
     if (LOG.isDebugEnabled()) {
       LOG.debug("\n===============\n" + sql + "\n--ERROR.\n===============");
     }
-    PropagationUtils.handleDataAccessException(exception,
-                                               sql,
-                                               historyLogger.getStandardExceptionHandler(),
-                                               sqlFile,
-                                               historyLogger.getJdbcTemplate().getDataSource().getConnection());
+    Connection connection = historyLogger.getJdbcTemplate().getDataSource().getConnection();
+    try {
+      PropagationUtils.handleDataAccessException(exception,
+                                                 sql,
+                                                 historyLogger.getStandardExceptionHandler(),
+                                                 sqlFile,
+                                                 connection);
+    } finally {
+      connection.close();
+    }
   }
 }
