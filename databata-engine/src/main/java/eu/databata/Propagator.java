@@ -27,7 +27,6 @@ import eu.databata.engine.util.PropagatorLock;
 import eu.databata.engine.version.VersionProvider;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -344,24 +343,24 @@ public abstract class Propagator implements InitializingBean {
     this.functionsDirectory = functionsDir.getFile();
   }
 
-  public void setProceduresDir(URL proceduresDir) {
-    this.proceduresDirectory = new File(proceduresDir.getPath());
+  public void setProceduresDir(Resource proceduresDir) throws IOException {
+    this.proceduresDirectory = proceduresDir.getFile();
   }
 
-  public void setPackageDir(URL packageDir) {
-    this.packagesDirectory = new File(packageDir.getPath());
+  public void setPackageDir(Resource packageDir) throws IOException {
+    this.packagesDirectory = packageDir.getFile();
   }
 
-  public void setHeadersDir(URL headersDir) {
-    this.packagesHeaderDirectory = new File(headersDir.getPath());
+  public void setHeadersDir(Resource headersDir) throws IOException {
+    this.packagesHeaderDirectory = headersDir.getFile();
   }
 
-  public void setViewDir(URL viewDir) {
-    this.viewsDirectory = new File(viewDir.getPath());
+  public void setViewDir(Resource viewDir) throws IOException {
+    this.viewsDirectory = viewDir.getFile();
   }
 
-  public void setTriggerDir(URL triggerDir) {
-    this.triggersDirectory = new File(triggerDir.getPath());
+  public void setTriggerDir(Resource triggerDir) throws IOException {
+    this.triggersDirectory = triggerDir.getFile();
   }
 
   public void setDisableDbPropagation(final boolean disableDbPropagation) {
