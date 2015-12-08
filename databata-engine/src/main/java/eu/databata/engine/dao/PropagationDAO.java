@@ -15,20 +15,17 @@
  */
 package eu.databata.engine.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.springframework.jdbc.core.RowMapper;
-
-import eu.databata.engine.model.PropagationLock;
-
+import eu.databata.Propagator;
 import eu.databata.engine.model.HistoryLogEntry;
 import eu.databata.engine.model.PropagationHistory;
+import eu.databata.engine.model.PropagationLock;
 import eu.databata.engine.model.PropagationObject;
 import eu.databata.engine.model.PropagationObject.ObjectType;
 import eu.databata.engine.model.PropagationSqlLog;
 import eu.databata.engine.util.PropagationUtils;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -40,22 +37,23 @@ import org.apache.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 /**
  * @author Maksim Boiko  {@literal<mailto:max.boiko@gmail.com>}
  */
 public class PropagationDAO extends JdbcDaoSupport {
-  private static final Logger LOG = Logger.getLogger(PropagationDAO.class);
+  public static final Logger LOG = Logger.getLogger(PropagationDAO.class);
   private static final String TABLE_NAME_MARKER = "<<TABLE_NAME>>";
   private final static int MAX_SQLTEXT_LENGTH = 2000;
   private final static int MAX_ERRORTEXT_LENGTH = 1000;
 
-  private String changeHistoryTable = "sys_db_propagator_history";
-  private String propagationObjectsTable = "sys_db_propagator_object";
-  private String lockTable = "sys_db_propagator_lock";
-  private String historyLogTable = "sys_db_propagator_sql_log";
-  private String databaseCode = "ORA";
+  private String changeHistoryTable;
+  private String propagationObjectsTable;
+  private String lockTable;
+  private String historyLogTable;
+  private String databaseCode;
 
   private String createHistorySQL;
   private String createPropagationObjectsSQL;
@@ -301,7 +299,7 @@ public class PropagationDAO extends JdbcDaoSupport {
   }
 
   private String getVarcharDefinition(int charNumber) {
-    if ("ORA".equals(databaseCode)) {
+    if (Propagator.DATABASE_CODE_ORACLE.equals(databaseCode)) {
       return "VARCHAR2(" + charNumber + " char)";
     }
 

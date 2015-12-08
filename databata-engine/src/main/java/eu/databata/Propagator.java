@@ -61,6 +61,12 @@ import org.springframework.transaction.support.TransactionTemplate;
 public abstract class Propagator implements InitializingBean {
   private static final Logger LOG = Logger.getLogger(Propagator.class);
 
+  public static final String DATABASE_CODE_ORACLE = "ORA";
+  public static final String DEFAULT_PROPAGATOR_SQL_LOG_TABLE = "sys_db_propagator_sql_log";
+  public static final String DEFAULT_PROPAGATOR_LOCK_TABLE = "sys_db_propagator_lock";
+  public static final String DEFAULT_PROPAGATOR_OBJECT_TABLE = "sys_db_propagator_object";
+  public static final String DEFAULT_PROPAGATOR_HISTORY_TABLE = "sys_db_propagator_history";
+
   private static final String GO_SQL_PATTERN = "go.*\\.sql";
   private static final String TEST_SQL_PATTERN = "test.*\\.sql";
 
@@ -75,10 +81,10 @@ public abstract class Propagator implements InitializingBean {
   private boolean useTestData;
   private boolean simulationMode;
   private boolean enableAutomaticTransformation;
-  private String changeHistoryTable;
-  private String lockTable;
-  private String propagationObjectsTable;
-  private String historyLogTable;
+  private String changeHistoryTable = DEFAULT_PROPAGATOR_HISTORY_TABLE;
+  private String lockTable = DEFAULT_PROPAGATOR_LOCK_TABLE;
+  private String propagationObjectsTable = DEFAULT_PROPAGATOR_OBJECT_TABLE;
+  private String historyLogTable = DEFAULT_PROPAGATOR_SQL_LOG_TABLE;
   private PropagationDAO propagationDAO;
   private boolean finished;
 
