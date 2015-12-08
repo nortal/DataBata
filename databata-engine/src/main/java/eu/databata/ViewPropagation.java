@@ -55,7 +55,7 @@ public class ViewPropagation extends SupplementPropagation {
     }
     List<PropagationObject> sortedViews = sortViews(propagationObjects);
     super.propagateObjects(sortedViews);
-  };
+  }
 
   private List<PropagationObject> sortViews(Collection<PropagationObject> views) {
     Map<String, PropagationObject> allViews = new HashMap<String, PropagationObject>();

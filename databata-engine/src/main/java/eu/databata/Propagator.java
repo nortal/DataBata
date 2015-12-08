@@ -15,16 +15,13 @@
  */
 package eu.databata;
 
-import java.util.Date;
-
-import org.springframework.transaction.TransactionDefinition;
-
 import eu.databata.engine.dao.PropagationDAO;
 import eu.databata.engine.exeptions.SQLExceptionFactory;
 import eu.databata.engine.exeptions.SQLExceptionHandler;
 import eu.databata.engine.model.PropagationObject;
 import eu.databata.engine.model.PropagationObject.ObjectType;
 import eu.databata.engine.util.DBHistoryLogger;
+import eu.databata.engine.util.DummyPropagatorLock;
 import eu.databata.engine.util.PropagationUtils;
 import eu.databata.engine.util.PropagatorLock;
 import eu.databata.engine.version.VersionProvider;
@@ -35,6 +32,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -46,9 +44,11 @@ import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
 import org.hsqldb.cmdline.StandardTransformer;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -340,27 +340,27 @@ public abstract class Propagator implements InitializingBean {
     this.jdbcTemplate = jdbcTemplate;
   }
 
-  public void setFunctionsDir(URL functionsDir) throws IOException {
-    this.functionsDirectory = new File(functionsDir.getPath());
+  public void setFunctionsDir(Resource functionsDir) throws IOException {
+    this.functionsDirectory = functionsDir.getFile();
   }
 
-  public void setProceduresDir(URL proceduresDir) throws IOException {
+  public void setProceduresDir(URL proceduresDir) {
     this.proceduresDirectory = new File(proceduresDir.getPath());
   }
 
-  public void setPackageDir(URL packageDir) throws IOException {
+  public void setPackageDir(URL packageDir) {
     this.packagesDirectory = new File(packageDir.getPath());
   }
 
-  public void setHeadersDir(URL headersDir) throws IOException {
+  public void setHeadersDir(URL headersDir) {
     this.packagesHeaderDirectory = new File(headersDir.getPath());
   }
 
-  public void setViewDir(URL viewDir) throws IOException {
+  public void setViewDir(URL viewDir) {
     this.viewsDirectory = new File(viewDir.getPath());
   }
 
-  public void setTriggerDir(URL triggerDir) throws IOException {
+  public void setTriggerDir(URL triggerDir) {
     this.triggersDirectory = new File(triggerDir.getPath());
   }
 
@@ -463,7 +463,7 @@ public abstract class Propagator implements InitializingBean {
     }
     propagationDAO.setDatabaseCode(databaseCode);
 
-    propagatorLock = new PropagatorLock(propagationDAO);
+    propagatorLock = simulationMode ? new DummyPropagatorLock(propagationDAO) : new PropagatorLock(propagationDAO);
     SQLExceptionHandler exceptionHandler = SQLExceptionFactory.newHandler(databaseCode);
     historyLogger =
         new DBHistoryLogger(transactionTemplate, propagationDAO, exceptionHandler, moduleName, simulationMode);

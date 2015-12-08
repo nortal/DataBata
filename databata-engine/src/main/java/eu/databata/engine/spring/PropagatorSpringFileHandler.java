@@ -58,7 +58,7 @@ public class PropagatorSpringFileHandler implements PropagatorFileHandler {
     for (File file : directory.listFiles(new ChangesDirFilter(databaseCode))) {
       if (file.isDirectory()) {
         File orderFile = new File(file, ORDER_FILE);
-        if (orderFile != null && orderFile.isFile()) {
+        if (orderFile.isFile()) {
           changes.put(PropagationUtils.readFile(orderFile) + file.getName(), file);
         } else if (file.listFiles(new FilesByRegexpFilter("go.*\\.sql")).length > 0) {
           keyPrefix = keyPrefix.equals("") ? "" : keyPrefix + "/";
@@ -106,10 +106,11 @@ public class PropagatorSpringFileHandler implements PropagatorFileHandler {
       this.fileSearchRegexp = fileSearchRegexp;
     }
 
+    @Override
     public boolean accept(File file, String name) {
       return name.matches(fileSearchRegexp);
     }
-  };
+  }
 
   private class DatabaseSpecificFilenameFilter implements FilenameFilter {
     private final String databaseCode;
@@ -118,6 +119,7 @@ public class PropagatorSpringFileHandler implements PropagatorFileHandler {
       this.databaseCode = databaseCode;
     }
 
+    @Override
     public boolean accept(File file, String name) {
       if (databaseCode == null) {
         return false;
