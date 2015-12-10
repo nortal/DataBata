@@ -15,14 +15,12 @@
  */
 package eu.databata.engine.osgi;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-
 import eu.databata.Propagator;
 import eu.databata.PropagatorExecutionPrecondition;
 import eu.databata.PropagatorFileHandler;
 import eu.databata.PropagatorLockExecutionPrecondition;
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import org.osgi.framework.BundleContext;
@@ -39,8 +37,32 @@ public class PropagatorOsgiInstance extends Propagator implements BundleContextA
     return handler;
   }
   
-  public void setChanges(URL changesDir) throws IOException {
+  public void setChanges(URL changesDir) {
     this.changesDir = new File(changesDir.getPath());
+  }
+  
+  public void setFunctionsDir(URL functionsDir) {
+    this.functionsDirectory = new File(functionsDir.getPath());
+  }
+
+  public void setProceduresDir(URL proceduresDir) {
+    this.proceduresDirectory = new File(proceduresDir.getPath());
+  }
+
+  public void setPackageDir(URL packageDir) {
+    this.packagesDirectory = new File(packageDir.getPath());
+  }
+
+  public void setHeadersDir(URL headersDir) {
+    this.packagesHeaderDirectory = new File(headersDir.getPath());
+  }
+
+  public void setViewDir(URL viewDir) {
+    this.viewsDirectory = new File(viewDir.getPath());
+  }
+
+  public void setTriggerDir(URL triggerDir) {
+    this.triggersDirectory = new File(triggerDir.getPath());
   }
 
   @Override

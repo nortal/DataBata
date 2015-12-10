@@ -26,7 +26,6 @@ import eu.databata.engine.util.PropagationUtils;
 import eu.databata.engine.util.PropagatorLock;
 import eu.databata.engine.version.VersionProvider;
 import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -43,7 +42,6 @@ import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
 import org.hsqldb.cmdline.StandardTransformer;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.core.io.Resource;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -99,12 +97,12 @@ public abstract class Propagator implements InitializingBean {
   private SQLPropagationTool sqlExecutor;
   private VersionProvider versionProvider;
 
-  private File packagesDirectory;
-  private File packagesHeaderDirectory;
-  private File viewsDirectory;
-  private File triggersDirectory;
-  private File functionsDirectory;
-  private File proceduresDirectory;
+  protected File packagesDirectory;
+  protected File packagesHeaderDirectory;
+  protected File viewsDirectory;
+  protected File triggersDirectory;
+  protected File functionsDirectory;
+  protected File proceduresDirectory;
   protected File changesDir;
 
   private SupplementPropagation packageHeaders = null;
@@ -343,30 +341,6 @@ public abstract class Propagator implements InitializingBean {
   // Property setters
   public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
-  }
-
-  public void setFunctionsDir(Resource functionsDir) throws IOException {
-    this.functionsDirectory = functionsDir.getFile();
-  }
-
-  public void setProceduresDir(Resource proceduresDir) throws IOException {
-    this.proceduresDirectory = proceduresDir.getFile();
-  }
-
-  public void setPackageDir(Resource packageDir) throws IOException {
-    this.packagesDirectory = packageDir.getFile();
-  }
-
-  public void setHeadersDir(Resource headersDir) throws IOException {
-    this.packagesHeaderDirectory = headersDir.getFile();
-  }
-
-  public void setViewDir(Resource viewDir) throws IOException {
-    this.viewsDirectory = viewDir.getFile();
-  }
-
-  public void setTriggerDir(Resource triggerDir) throws IOException {
-    this.triggersDirectory = triggerDir.getFile();
   }
 
   public void setDisableDbPropagation(final boolean disableDbPropagation) {

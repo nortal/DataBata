@@ -77,4 +77,29 @@ public class PropagatorSpringInstance extends Propagator {
     preconditions.add(new PropagatorLockExecutionPrecondition(propagatorLock));
     return preconditions;
   }
+
+  public void setFunctionsDir(Resource functionsDir) throws IOException {
+    this.functionsDirectory = functionsDir.getFile();
+  }
+  
+  public void setProceduresDir(Resource proceduresDir) throws IOException {
+    this.proceduresDirectory = proceduresDir.getFile();
+  }
+  
+  public void setPackageDir(Resource packageDir) throws IOException {
+    this.packagesDirectory = packageDir.getFile();
+  }
+  
+  public void setHeadersDir(Resource headersDir) throws IOException {
+    this.packagesHeaderDirectory = headersDir.getFile();
+  }
+  
+  public void setViewDir(Resource viewDir) throws IOException {
+    this.viewsDirectory = viewDir.getFile();
+  }
+  
+  public void setTriggerDir(Resource triggerDir) throws IOException {
+    this.triggersDirectory = triggerDir.getFile();
+  }
+
 }
