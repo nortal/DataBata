@@ -2,3 +2,9 @@ databata.driver=oracle.jdbc.OracleDriver
 databata.connection-url=jdbc:oracle:thin:@xxx.webmedia.int:1521:xxx
 databata.user=bata_test
 databata.password=bata_test
+# Optional parameters that have same default values in application
+databata.databaseCode=ORA
+databata.changeHistoryTable=sys_db_propagator_history
+databata.propagationObjectsTable=sys_db_propagator_object
+databata.historyLogTable=sys_db_propagator_sql_log
+databata.lockTable=sys_db_propagator_lock

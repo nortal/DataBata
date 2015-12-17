@@ -45,7 +45,12 @@
 
 	<bean id="propagationDao"
 		class="eu.databata.engine.dao.PropagationDAO">
-		<property name="jdbcTemplate" ref="jdbcTemplate" />
+    <property name="jdbcTemplate" ref="jdbcTemplate" />
+    <property name="databaseCode" value="${databata.databaseCode:ORA}" />
+    <property name="changeHistoryTable" value="${databata.changeHistoryTable:sys_db_propagator_history}" />
+    <property name="propagationObjectsTable" value="${databata.propagationObjectsTable:sys_db_propagator_object}" />
+    <property name="historyLogTable" value="${databata.historyLogTable:sys_db_propagator_sql_log}" />
+    <property name="lockTable" value="${databata.lockTable:sys_db_propagator_lock}" />
 	</bean>
 
 </beans>
