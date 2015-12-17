@@ -13,13 +13,13 @@ dependencies {
 	compile 'com.sun.jersey:jersey-servlet:1.16'
 	compile 'com.sun.jersey:jersey-json:1.16'
 	compile 'com.google.code.gson:gson:2.2.4'
-	compile 'org.springframework:spring-jdbc:3.2.5.RELEASE'
-	compile 'org.springframework:spring-expression:3.2.5.RELEASE'
-	compile 'org.springframework:spring-web:3.2.5.RELEASE'
+	compile 'org.springframework:spring-jdbc:3.2.15.RELEASE'
+	compile 'org.springframework:spring-expression:3.2.15.RELEASE'
+	compile 'org.springframework:spring-web:3.2.15.RELEASE'
 	compile 'com.sun.jersey.contribs:jersey-spring:1.9.1'
 	
 	runtime 'com.oracle:ojdbc6:11.2.0.3'
-	runtime 'org.postgresql:com.springsource.org.postgresql.jdbc4:8.3.604'
+	runtime 'org.postgresql:postgresql:9.4-1206-jdbc4'
 }
 
 sourceSets {
