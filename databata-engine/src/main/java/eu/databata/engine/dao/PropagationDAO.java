@@ -23,6 +23,7 @@ import eu.databata.engine.model.PropagationObject;
 import eu.databata.engine.model.PropagationObject.ObjectType;
 import eu.databata.engine.model.PropagationSqlLog;
 import eu.databata.engine.util.PropagationUtils;
+
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,9 +33,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.RowMapper;
@@ -144,7 +147,8 @@ public class PropagationDAO extends JdbcDaoSupport {
   public boolean hasPropagationObjectEntry(String objectName, String moduleName) {
     String sql = "SELECT 1 FROM " + propagationObjectsTable + " WHERE object_name = ? AND module_name = ?";
     try {
-      return getJdbcTemplate().queryForInt(sql, new Object[] { objectName, moduleName }) == 1;
+      Number number = getJdbcTemplate().queryForObject(sql, new Object[] { objectName, moduleName }, Integer.class);
+      return (number != null ? number.intValue() : 0) == 1;
     } catch (EmptyResultDataAccessException e) {
       return false;
     }
