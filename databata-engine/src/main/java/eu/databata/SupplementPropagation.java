@@ -111,13 +111,13 @@ public class SupplementPropagation {
 
     for (File file : propagatedFiles) {
       if (LOG.isDebugEnabled()) {
-        LOG.info("Propagating file <" + file.getName() + ">, " + this.objectType.name());
+        LOG.debug("reading file <" + file.getName() + ">, " + this.objectType.name());
       }
       String md5 = null;
       try {
         md5 = getHash(new FileInputStream(file));
       } catch (FileNotFoundException e) {
-        new RuntimeException(e);
+        throw new RuntimeException(e);
       }
       localObjectsHashes.add(md5);
       if (!propagatedObjectsHashes.containsKey(md5)) {
@@ -154,7 +154,7 @@ public class SupplementPropagation {
     if (!canPropagate()) {
       return;
     }
-    LOG.info("Supplement directory path: " + directory.getPath());
+    LOG.debug("Supplement directory path: " + directory.getPath());
 
     this.propagatedFiles =
         propagatorFileLocator.findSupplementFiles(this.directory, fileSearchRegexp, sqlExecutor.getDatabaseCode());

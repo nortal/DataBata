@@ -25,18 +25,6 @@ import eu.databata.engine.util.DummyPropagatorLock;
 import eu.databata.engine.util.PropagationUtils;
 import eu.databata.engine.util.PropagatorLock;
 import eu.databata.engine.version.VersionProvider;
-import java.io.File;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
@@ -49,6 +37,13 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.util.StopWatch;
+
+import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Main database propagation class. After setting public properties, call the init method.
@@ -116,7 +111,9 @@ public abstract class Propagator implements InitializingBean {
   }
   
   public void init() {
-    LOG.info(this.moduleName + " starting propagation. " + new Date());
+    LOG.info(this.moduleName + " starting propagation (" + new Date() + ")");
+    StopWatch stopwatch = new StopWatch();
+    stopwatch.start();
 
     if (isPropagatorDisabled()) {
       LOG.info("Changes propagation is disabled.");
@@ -140,7 +137,8 @@ public abstract class Propagator implements InitializingBean {
         finished = true;
       }
     }
-    LOG.info(this.moduleName + " finishing propagation." + new Date());
+    LOG.info(this.moduleName + " finishing propagation (" + new Date() + "),"
+                 + " took " + Math.round(stopwatch.getTotalTimeSeconds()) + " seconds overall.");
   }
 
   private boolean isPropagatorDisabled() {
@@ -149,7 +147,7 @@ public abstract class Propagator implements InitializingBean {
   
   private boolean isPropagatorDisabledGlobally() {
     String databataEnabled = System.getProperty("databata.enabled");
-    System.out.println("\n\n sys prop " + databataEnabled);
+    LOG.debug("system property 'databata.enabled' is set to: " + databataEnabled);
     return databataEnabled != null && !"true".equals(databataEnabled);
   }
   
@@ -194,11 +192,11 @@ public abstract class Propagator implements InitializingBean {
 
     StringBuilder sb = new StringBuilder("The following change directories were read: \n");
     for (Entry<String, File> entry : changes.entrySet()) {
-      sb.append(entry.toString() + "\n");
+      sb.append(entry.toString()).append("\n");
     }
-    LOG.info(sb);
+    LOG.debug(sb);
 
-    Set<String> propagatedChanges = new HashSet<String>();
+    Set<String> propagatedChanges;
     propagatedChanges = propagationDAO.getPropagatedChages(moduleName);
     for (File change : changes.values()) {
       propagateChange(change, propagatedChanges);
@@ -219,15 +217,18 @@ public abstract class Propagator implements InitializingBean {
     File[] files = getFileHandler().findSqls(changeDirectory, fileSearchRegexp);
     Arrays.sort(files);
     for (File file : files) {
-      LOG.info("\n*********************************************\nProcessing file <" + file.getName()
-          + ">\n*********************************************");
       String id =
           PropagationUtils.getPathLastFolder(changeDirectory.getName()) + PropagationUtils.removeExtension(file);
+      String fileLocationAndName = changeDirectory.getName() + File.separator + file.getName();
       if (!propagatedChanges.contains(id)) {
+        LOG.info("\n*********************************************\n" + "Processing file <" + fileLocationAndName + ">"
+                     + "\n*********************************************");
         propagateSingleEntry(id, file);
         if (reloadFired) {
           break;
         }
+      } else {
+        LOG.debug("Skipping file marked as already run <" + fileLocationAndName + ">");
       }
     }
   }
