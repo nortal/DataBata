@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+      Copyright 2014 Nortal AS
+
+      Licensed under the Apache License, Version 2.0 (the "License");
+      you may not use this file except in compliance with the License.
+      You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+      Unless required by applicable law or agreed to in writing, software
+      distributed under the License is distributed on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      See the License for the specific language governing permissions and
+      limitations under the License.
+
+-->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
 	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
@@ -10,20 +27,19 @@
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd 
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-  <import resource="propagator-db-beans.xml"/>
+  <import resource="propagator-test-db-beans.xml"/>
     <bean id="versionProvider" class="eu.databata.engine.version.StandardVersionProvider">
         <property name="version" value="4.27.1.1" />
     </bean>
   
-	<bean id="propagator" class="eu.databata.engine.spring.PropagatorSpringInstance"
-		init-method="init">
+	<bean id="propagator" class="eu.databata.engine.spring.PropagatorSpringInstance" >
 		<property name="jdbcTemplate" ref="jdbcTemplate" />
 		<property name="transactionManager" ref="transactionManager" />
 
-		<property name="changes" value="test_sqls/WEB-INF/db/changes" />
-		<property name="packageDir" value="test_sqls/WEB-INF/db/packages" />
-		<property name="viewDir" value="test_sqls/WEB-INF/db/views" />
-		<property name="triggerDir" value="test_sqls/WEB-INF/db/triggers" />
+		<property name="changes" value="/WEB-INF/db/changes" />
+		<property name="packageDir" value="/WEB-INF/db/packages" />
+		<property name="viewDir" value="/WEB-INF/db/views" />
+		<property name="triggerDir" value="/WEB-INF/db/triggers" />
 		<property name="useTestData" value="${db.propagation.test.data.used}" />
 		<property name="disableDbPropagation" value="${db.propagation.disable}" />
 		<property name="environmentSql" value="${db.propagation.environment}" />

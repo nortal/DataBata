@@ -15,16 +15,12 @@
  */
 package eu.databata;
 
-import eu.databata.engine.version.VersionProvider;
-import eu.databata.engine.version.VersionUtil;
-
-import eu.databata.engine.util.PropagationUtils;
-
+import eu.databata.engine.dao.PropagationDAO;
 import eu.databata.engine.model.PropagationObject;
 import eu.databata.engine.model.PropagationObject.ObjectType;
-
-import eu.databata.engine.dao.PropagationDAO;
-
+import eu.databata.engine.util.PropagationUtils;
+import eu.databata.engine.version.VersionProvider;
+import eu.databata.engine.version.VersionUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,7 +42,7 @@ import org.apache.log4j.Logger;
  * An object of this class provides the propagation of one type of supplement data, i.e. packages, package headers,
  * views, or triggers.
  * 
- * @author Aleksei Lissitsin  {@literal<aleksei.lissitsin@webmedia.ee>}
+ * @author Aleksei Lissitsin {@literal<aleksei.lissitsin@webmedia.ee>}
  * @author Maksim Boiko
  */
 public class SupplementPropagation {
@@ -65,6 +61,7 @@ public class SupplementPropagation {
   private boolean simulationMode;
   private File[] propagatedFiles;
   private PropagatorFileHandler propagatorFileLocator;
+  private String defaultVersionPattern;
 
   public SupplementPropagation(File directory,
                                ObjectType objectType,
@@ -92,6 +89,10 @@ public class SupplementPropagation {
     this.propagatorFileLocator = propagatorFileLocator;
   }
 
+  public void setDefaultVersionPattern(String defaultVersionPattern) {
+    this.defaultVersionPattern = defaultVersionPattern;
+  }
+
   public void propagate() {
     if (!canPropagate()) {
       LOG.info("Propagation of " + objectType.name()
@@ -99,7 +100,7 @@ public class SupplementPropagation {
 
       return;
     }
-    if(propagatedFiles == null) {
+    if (propagatedFiles == null) {
       LOG.info("Nothing to propagate");
       return;
     }
@@ -127,9 +128,7 @@ public class SupplementPropagation {
         String modifiedObjectName = PropagationUtils.removeExtension(file);
         PropagationObject propagationObject =
             new PropagationObject(moduleName, modifiedObjectName, file, this.objectType, md5);
-        if (versionProvider != null) {
-          propagationObject.setVersion(versionProvider.getVersion());
-        }
+        propagationObject.setVersion(getPropagationObjectVersion(modifiedObjectName));
         modifiedObjectsNames.add(modifiedObjectName);
         propagationObjectsToUpdate.add(propagationObject);
       } else {
@@ -144,6 +143,33 @@ public class SupplementPropagation {
     }
     propagateObjects(propagationObjectsToUpdate);
     dropObjects(modifiedObjectsNames);
+  }
+
+  /**
+   * Checks, if propagation object current version matches default pattern, if not, then returns its previous version
+   * 
+   * @param objectName
+   * @return propagation object valid version
+   */
+  private String getPropagationObjectVersion(String objectName) {
+    if (versionProvider == null) {
+      return null;
+    }
+    if (VersionUtil.isDefaultVersionPattern(versionProvider.getVersion(), defaultVersionPattern)) {
+      return versionProvider.getVersion();
+    } else if (!StringUtils.isEmpty(versionProvider.getVersion())) {
+      return getPropagationObjectPreviousVersion(objectName);
+    }
+    return null;
+  }
+
+  private String getPropagationObjectPreviousVersion(String objectName) {
+    for (PropagationObject propagationObject : propagatedObjectsHashes.values()) {
+      if (propagationObject.getObjectName().equals(objectName)) {
+        return propagationObject.getVersion();
+      }
+    }
+    return null;
   }
 
   /**
@@ -179,7 +205,8 @@ public class SupplementPropagation {
   }
 
   private void updateMD5Entry(PropagationObject propagationObject) {
-    if (propagationDAO.hasPropagationObjectEntry(propagationObject.getObjectName(), propagationObject.getModuleName())) {
+    if (propagationDAO.hasPropagationObjectEntry(propagationObject.getObjectName(),
+                                                 propagationObject.getModuleName())) {
       propagationDAO.updatePropagationObjectEntry(propagationObject);
     } else {
       propagationDAO.insertPropagationObjectEntry(propagationObject);
@@ -216,13 +243,13 @@ public class SupplementPropagation {
   }
 
   private boolean canUpdate(String version) {
-    if (versionProvider == null || StringUtils.isEmpty(versionProvider.getVersion())) {
+    if (versionProvider == null || StringUtils.isEmpty(versionProvider.getVersion())
+        || !VersionUtil.isDefaultVersionPattern(versionProvider.getVersion(), defaultVersionPattern)) {
       return true;
     }
     if (StringUtils.isEmpty(version)) {
       return true;
     }
-
     return VersionUtil.isEqualOrGreater(versionProvider.getVersion(), version);
   }
 

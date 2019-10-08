@@ -25,6 +25,17 @@ import eu.databata.engine.util.DummyPropagatorLock;
 import eu.databata.engine.util.PropagationUtils;
 import eu.databata.engine.util.PropagatorLock;
 import eu.databata.engine.version.VersionProvider;
+import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
@@ -38,12 +49,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.StopWatch;
-
-import java.io.File;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.Map.Entry;
 
 /**
  * Main database propagation class. After setting public properties, call the init method.
@@ -99,6 +104,7 @@ public abstract class Propagator implements InitializingBean {
   protected File functionsDirectory;
   protected File proceduresDirectory;
   protected File changesDir;
+  private String defaultVersionPattern;
 
   private SupplementPropagation packageHeaders = null;
   private SupplementPropagation packages = null;
@@ -388,7 +394,7 @@ public abstract class Propagator implements InitializingBean {
   public void setEnvironmentSql(String environmentSql) {
     this.environmentSql = environmentSql;
   }
-
+  
   public void setPropagationObjectsTable(String propagationObjectsTable) {
     this.propagationObjectsTable = propagationObjectsTable;
   }
@@ -400,9 +406,13 @@ public abstract class Propagator implements InitializingBean {
   public void setVersionProvider(VersionProvider versionProvider) {
     this.versionProvider = versionProvider;
   }
-
+  
   public void setDependsOn(String dependsOn) {
     this.dependsOn = Arrays.asList(StringUtils.split(dependsOn, ','));
+  }
+  
+  public void setDefaultVersionPattern(String defaultVersionPattern) {
+    this.defaultVersionPattern = defaultVersionPattern;
   }
 
   public String getModuleName() {
@@ -472,6 +482,7 @@ public abstract class Propagator implements InitializingBean {
     packageHeaders.setPropagatorFileHandler(getFileHandler());
     packageHeaders.setSimulationMode(simulationMode);
     packageHeaders.setVersionProvider(versionProvider);
+    packageHeaders.setDefaultVersionPattern(defaultVersionPattern);
     packageHeaders.collectPropagatedFiles();
 
     functions =
@@ -484,6 +495,7 @@ public abstract class Propagator implements InitializingBean {
     functions.setPropagatorFileHandler(getFileHandler());
     functions.setSimulationMode(simulationMode);
     functions.setVersionProvider(versionProvider);
+    functions.setDefaultVersionPattern(defaultVersionPattern);
     functions.collectPropagatedFiles();
 
     procedures =
@@ -496,6 +508,7 @@ public abstract class Propagator implements InitializingBean {
     procedures.setPropagatorFileHandler(getFileHandler());
     procedures.setSimulationMode(simulationMode);
     procedures.setVersionProvider(versionProvider);
+    procedures.setDefaultVersionPattern(defaultVersionPattern);
     procedures.collectPropagatedFiles();
 
     packages =
@@ -508,12 +521,14 @@ public abstract class Propagator implements InitializingBean {
     packages.setPropagatorFileHandler(getFileHandler());
     packages.setSimulationMode(simulationMode);
     packages.setVersionProvider(versionProvider);
+    packages.setDefaultVersionPattern(defaultVersionPattern);
     packages.collectPropagatedFiles();
 
     views = new ViewPropagation(viewsDirectory, moduleName, sqlExecutor, propagationDAO, getViewRegexp());
     views.setPropagatorFileHandler(getFileHandler());
     views.setSimulationMode(simulationMode);
     views.setVersionProvider(versionProvider);
+    views.setDefaultVersionPattern(defaultVersionPattern);
     views.collectPropagatedFiles();
 
     triggers =
@@ -526,6 +541,7 @@ public abstract class Propagator implements InitializingBean {
     triggers.setPropagatorFileHandler(getFileHandler());
     triggers.setSimulationMode(simulationMode);
     triggers.setVersionProvider(versionProvider);
+    triggers.setDefaultVersionPattern(defaultVersionPattern);
     triggers.collectPropagatedFiles();
   }
 
@@ -558,6 +574,7 @@ public abstract class Propagator implements InitializingBean {
     LOG.info("Environament SQL:            " + environmentSql);
     LOG.info("Revalidation statement:      " + revalidationStatement);
     LOG.info("Module version:              " + (versionProvider != null ? versionProvider.getVersion() : ""));
+    LOG.info("Default version pattern:     " + defaultVersionPattern);
     Connection connection = null;
     try {
       if (!simulationMode) {

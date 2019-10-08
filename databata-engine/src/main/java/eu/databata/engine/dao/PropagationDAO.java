@@ -23,7 +23,6 @@ import eu.databata.engine.model.PropagationObject;
 import eu.databata.engine.model.PropagationObject.ObjectType;
 import eu.databata.engine.model.PropagationSqlLog;
 import eu.databata.engine.util.PropagationUtils;
-
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,11 +32,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.RowMapper;
@@ -167,6 +164,11 @@ public class PropagationDAO extends JdbcDaoSupport {
   public void removePropagationObjectEntry(String objectName, String moduleName) {
     String removeSql = "DELETE FROM " + propagationObjectsTable + " WHERE object_name = ? AND module_name = ?";
     getJdbcTemplate().update(removeSql, new Object[] { objectName, moduleName });
+  }
+  
+  public void removeAllPropagationObjectEntries(String moduleName) {
+    String removeSql = "DELETE FROM " + propagationObjectsTable + " WHERE module_name = ?";
+    getJdbcTemplate().update(removeSql, new Object[] { moduleName });
   }
 
   public void updatePropagationObjectEntry(PropagationObject propagationObject) {

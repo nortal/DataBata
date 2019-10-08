@@ -17,9 +17,12 @@ package eu.databata.engine.version;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.apache.commons.lang.StringUtils;
 
 /**
- * @author Maksim Boiko  {@literal<mailto:max.boiko@gmail.com>}
+ * @author Maksim Boiko {@literal<mailto:max.boiko@gmail.com>}
  */
 public class VersionUtil {
 
@@ -53,6 +56,26 @@ public class VersionUtil {
     } catch (NumberFormatException e) {
       return 0;
     }
+  }
+
+  /**
+   * Check, if provided version matches given pattern.
+   * 
+   * @param version
+   * @param defaultVersionPattern
+   * @return If 'defaultVersionPattern' property is not set return true. If 'version' is NULL return false. If both are
+   *         provided return the matching result.
+   */
+  public static boolean isDefaultVersionPattern(String version, String defaultVersionPattern) {
+    if (StringUtils.isEmpty(defaultVersionPattern)) {
+      return true;
+    }
+    if (StringUtils.isEmpty(version)) {
+      return false;
+    }
+    Pattern pattern = Pattern.compile(defaultVersionPattern);
+    Matcher matcher = pattern.matcher(version);
+    return matcher.matches();
   }
 
   private static class Version implements Serializable {
